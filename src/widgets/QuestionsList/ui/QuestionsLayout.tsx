@@ -39,12 +39,6 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
   );
   const { mutate: createPlayer } = useApiMutation(api.players.create);
 
-  useEffect(() => {
-    if (getRoom?.map((e) => e.isStart).toString() === "true") {
-      return redirect("/");
-    }
-  }, [getRoom]);
-
   const roomId = getRoom?.map((e) => e._id).toString();
 
   function onSaveIceberg() {
