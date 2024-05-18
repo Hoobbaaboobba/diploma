@@ -15,11 +15,11 @@ interface QuestionsListProps {
 }
 
 export default function QuestionsList({ roomId }: QuestionsListProps) {
-  const { mutate, pending } = useApiMutation(api.questions.create);
-
   const getQuestions = useQuery(api.questions.get, {
     roomId: roomId as Id<"Rooms">,
   });
+
+  const { mutate, pending } = useApiMutation(api.questions.create);
 
   function onPlus() {
     return mutate({

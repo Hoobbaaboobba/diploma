@@ -23,11 +23,11 @@ export default function CreateRoom({ session }: CreateRoomProps) {
   }
 
   const onClick = () => {
-    router.push(`/create/${createId}`);
-    return mutate({
+    mutate({
       authorID: session.user.id,
       createId: createId,
     });
+    router.push(`/create/${createId}`);
   };
   return (
     <Button onClick={onClick} className="w-[200px]">
