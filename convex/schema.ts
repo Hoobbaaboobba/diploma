@@ -27,7 +27,7 @@ export default defineSchema({
     .index("by_playerId", ["playerId"]), // поиск игрока по id игрока
   // Схема вопросов
   Questions: defineTable({
-    roomId: v.string(), // id комнаты, к которой относится вопрос
+    roomId: v.id("Rooms"), // id комнаты, к которой относится вопрос
     content: v.string(), // содержание вопроса
   }).index("by_room", ["roomId"]), // поиск вопроса по id комнаты
   // Схема ответов на вопросы

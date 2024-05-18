@@ -3,7 +3,7 @@ import { mutation, query } from "./_generated/server";
 
 export const get = query({
   args: {
-    roomId: v.string(),
+    roomId: v.id("Rooms"),
   },
   handler: async (ctx, args) => {
     const questions = ctx.db

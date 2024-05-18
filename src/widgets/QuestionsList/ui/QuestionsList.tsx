@@ -8,6 +8,7 @@ import { Loader2, PlusCircle, Trash } from "lucide-react";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 import Question from "./Question";
 import { Skeleton } from "@/shared/ui/skeleton";
+import { Id } from "../../../../convex/_generated/dataModel";
 
 interface QuestionsListProps {
   roomId: string | undefined;
@@ -17,7 +18,7 @@ export default function QuestionsList({ roomId }: QuestionsListProps) {
   const { mutate, pending } = useApiMutation(api.questions.create);
 
   const getQuestions = useQuery(api.questions.get, {
-    roomId: roomId as string,
+    roomId: roomId as Id<"Rooms">,
   });
 
   function onPlus() {
