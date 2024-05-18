@@ -41,12 +41,12 @@ export default function PlayersList({ params, session }: PlayersListProps) {
   }
 
   return (
-    <div className="w-full h-screen flex flex-col gap-16 items-center mt-10">
-      <div className="flex justify-center items-center gap-2">
+    <div className="w-full container h-screen flex flex-col gap-16 items-center mt-10">
+      <div className="flex justify-center container items-center gap-2">
         {getPlayers?.map((player) => (
           <div
             key={player._id}
-            className="w-[500px] h-10 relative border flex justify-start items-center text-2xl rounded-md px-4"
+            className="w-full h-10 relative border flex justify-start items-center text-xl rounded-md px-4"
           >
             {player.name}
             {player.isReady && (

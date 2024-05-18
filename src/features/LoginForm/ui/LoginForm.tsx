@@ -49,8 +49,8 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <Card className="w-[400px]">
+    <div className="flex container justify-center items-center h-screen">
+      <Card className="w-3/4">
         <CardHeader>Enter your name</CardHeader>
         <CardContent>
           <Form {...form}>

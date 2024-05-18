@@ -48,7 +48,7 @@ export default function Question({ id, content, index }: QuestionProps) {
   }
 
   return (
-    <Card className="w-[600px] relative">
+    <Card className="w-full relative">
       <CardHeader>
         <CardTitle>Question {index + 1}</CardTitle>
       </CardHeader>

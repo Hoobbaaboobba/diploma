@@ -74,8 +74,8 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center py-8">
-      <Card className="w-[600px]">
+    <div className="flex container flex-col items-center justify-center py-8">
+      <Card className="w-full">
         <CardHeader>
           <CardTitle>Do you want to make an Icebergquestion?</CardTitle>
           <CardDescription>It is not important!</CardDescription>

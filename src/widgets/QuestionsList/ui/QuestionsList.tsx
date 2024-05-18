@@ -28,15 +28,15 @@ export default function QuestionsList({ roomId }: QuestionsListProps) {
 
   if (!getQuestions) {
     return (
-      <div className="w-full flex flex-col gap-10 justify-center items-center mt-10">
-        <Skeleton className="w-[600px] h-[202px]" />
-        <Skeleton className="w-[600px] h-[202px]" />
+      <div className="w-full container p-0 flex flex-col gap-10 justify-center items-center mt-10">
+        <Skeleton className="w-full h-[202px]" />
+        <Skeleton className="w-full h-[202px]" />
       </div>
     );
   }
 
   return (
-    <>
+    <div className="container p-0">
       {getQuestions.map((question, index) => (
         <div
           key={question._id}
@@ -49,9 +49,11 @@ export default function QuestionsList({ roomId }: QuestionsListProps) {
           />
         </div>
       ))}
-      <Button onClick={onPlus} variant="outline" size="icon" className="my-6">
-        {pending ? <Loader2 className="animate-spin" /> : <PlusCircle />}
-      </Button>
-    </>
+      <div className="flex justify-center items-center">
+        <Button onClick={onPlus} variant="outline" size="icon" className="my-6">
+          {pending ? <Loader2 className="animate-spin" /> : <PlusCircle />}
+        </Button>
+      </div>
+    </div>
   );
 }
