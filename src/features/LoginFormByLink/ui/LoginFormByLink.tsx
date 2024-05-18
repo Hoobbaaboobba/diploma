@@ -30,12 +30,9 @@ interface LoginFormByLinkProps {
   params: {
     roomId: string;
   };
-  session: any;
 }
-export default function LoginFormByLink({
-  params,
-  session,
-}: LoginFormByLinkProps) {
+
+export default function LoginFormByLink({ params }: LoginFormByLinkProps) {
   const [isPending, setTransition] = useTransition();
   const { mutate, pending } = useApiMutation(api.users.createUser);
 
@@ -53,16 +50,16 @@ export default function LoginFormByLink({
     setTransition(async () => {
       await login(values);
     });
-    createPlayer({
-      name: session.user.name,
-      playerId: session.user.id,
-      roomId: params.roomId,
-      role: "Admin",
-      isReady: false,
-    });
     mutate({
       userId: values.id,
       name: values.name,
+    });
+    createPlayer({
+      name: values.name,
+      playerId: values.id,
+      roomId: params.roomId,
+      role: "quest",
+      isReady: false,
     });
   }
 

@@ -18,7 +18,7 @@ export default async function RoomPage({ params }: RoomPageProps) {
   const sessionData = JSON.parse(jsonData);
 
   if (!session) {
-    return <LoginFormByLink params={params} session={session} />;
+    return <LoginFormByLink params={params} />;
   }
 
   return <PlayersList params={params} session={sessionData} />;

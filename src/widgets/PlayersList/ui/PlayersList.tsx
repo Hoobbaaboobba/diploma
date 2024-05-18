@@ -3,10 +3,11 @@
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
-import { Check } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 import { useState } from "react";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 interface PlayersListProps {
   params: {
@@ -40,30 +41,42 @@ export default function PlayersList({ params, session }: PlayersListProps) {
     });
   }
 
+  if (!getPlayers) {
+    return (
+      <div className="container space-y-1 mt-10">
+        <Skeleton className="w-full h-10" />
+        <Skeleton className="w-full h-10" />
+        <Skeleton className="w-full h-10" />
+        <Skeleton className="w-full h-10" />
+        <Skeleton className="w-full h-10" />
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full container h-screen flex flex-col gap-16 items-center mt-10">
-      <div className="flex justify-center container items-center gap-2">
+    <div className="w-full container p-0 h-screen flex flex-col gap-16 items-center mt-10">
+      <div className="flex flex-col justify-center container items-center gap-2">
         {getPlayers?.map((player) => (
           <div
             key={player._id}
             className="w-full h-10 relative border flex justify-start items-center text-xl rounded-md px-4"
           >
             {player.name}
-            {player.isReady && (
-              <div className="rounded-full bg-emerald-400 border absolute p-1 -bottom-2 -right-2">
-                <Check className="w-3 h-3 text-white" />
-              </div>
-            )}
+            <div
+              className={`${player.isReady ? "scale-100" : "scale-0"} transition rounded-full bg-emerald-400 border absolute p-1 -bottom-2 -right-2`}
+            >
+              <Check className="w-3 h-3 text-white" />
+            </div>
           </div>
         ))}
       </div>
       {getCurrentUser?.map((e) => e.isReady).toString() === "true" ? (
         <Button onClick={onUnReady} className="w-[100px]">
-          UnReady
+          {pending ? <Loader2 className="animate-spin" /> : "UnReady"}
         </Button>
       ) : (
         <Button onClick={onReady} className="w-[100px]">
-          Ready
+          {pending ? <Loader2 className="animate-spin" /> : "Ready"}
         </Button>
       )}
     </div>

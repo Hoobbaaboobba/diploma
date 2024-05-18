@@ -22,8 +22,8 @@ export default function CreateRoom({ session }: CreateRoomProps) {
 
   const createId = uuidv4();
 
-  const onClick = () => {
-    mutate({
+  const onClick = async () => {
+    await mutate({
       authorID: session.user.id,
       createId: createId,
     })
