@@ -26,8 +26,7 @@ export default function CreateRoom({ session }: CreateRoomProps) {
     mutate({
       authorID: session.user.id,
       createId: createId,
-    });
-    router.push(`/create/${createId}`);
+    }).then(() => router.push(`/create/${createId}`));
   };
   return (
     <Button onClick={onClick} className="w-[200px]">

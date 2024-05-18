@@ -15,8 +15,8 @@ import { QuestionsList } from "@/widgets/QuestionsList";
 import { api } from "../../../../convex/_generated/api";
 import { useQuery } from "convex/react";
 import { Loader2 } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
-import { redirect, useRouter } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface QuestionsLayout {
   params: {
@@ -63,8 +63,7 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
     updateStart({
       roomId: roomId,
       isStart: true,
-    });
-    router.push(`/rooms/${roomId}`);
+    }).then(() => router.push(`/rooms/${roomId}`));
   }
 
   return (
