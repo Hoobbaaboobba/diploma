@@ -8,8 +8,6 @@ import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/navigation";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 
-const createId = uuidv4();
-
 interface CreateRoomProps {
   session: any;
 }
@@ -22,12 +20,15 @@ export default function CreateRoom({ session }: CreateRoomProps) {
     return null;
   }
 
+  const createId = uuidv4();
+
   const onClick = () => {
     mutate({
       authorID: session.user.id,
       createId: createId,
-    });
-    setTimeout(() => router.push(`/create/${createId}`), 1000);
+    })
+      .then(() => router.push(`/create/${createId}`))
+      .catch((e) => e);
   };
   return (
     <Button onClick={onClick} className="w-[200px]">
