@@ -10,14 +10,23 @@ import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 
 const createId = uuidv4();
 
-export default function CreateRoom() {
+interface CreateRoomProps {
+  session: any;
+}
+
+export default function CreateRoom({ session }: CreateRoomProps) {
   const { mutate, pending } = useApiMutation(api.rooms.createRoom);
   const router = useRouter();
+
+  if (!session) {
+    return null;
+  }
 
   const onClick = () => {
     router.push(`/create/${createId}`);
     return mutate({
-      createId,
+      authorID: session.user.id,
+      createId: createId,
     });
   };
   return (

@@ -1,14 +1,6 @@
-import { Button } from "@/shared/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/shared/ui/card";
-import { Input } from "@/shared/ui/input";
-import { QuestionsList } from "@/widgets/QuestionsList";
+import QuestionsLayout from "@/widgets/QuestionsList/ui/QuestionsLayout";
+import { redirect } from "next/navigation";
+import { getSession } from "../../../../lib";
 
 interface CreateRoomPageProps {
   params: {
@@ -16,22 +8,17 @@ interface CreateRoomPageProps {
   };
 }
 
-export default function CreateRoomPage({ params }: CreateRoomPageProps) {
-  return (
-    <div className="flex flex-col items-center justify-center py-8">
-      <Card className="w-[600px]">
-        <CardHeader>
-          <CardTitle>Do you want to make an Icebergquestion?</CardTitle>
-          <CardDescription>It is not important!</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Input />
-        </CardContent>
-        <CardFooter>
-          <Button>Save</Button>
-        </CardFooter>
-      </Card>
-      <QuestionsList />
-    </div>
-  );
+export default async function CreateRoomPage({ params }: CreateRoomPageProps) {
+  const session = await getSession();
+
+  if (!session) {
+    return redirect("/");
+  }
+
+  const jsonData = JSON.stringify(session, null, 2);
+
+  // Parse the JSON string into a JavaScript object
+  const sessionData = JSON.parse(jsonData);
+
+  return <QuestionsLayout params={params} session={sessionData} />;
 }

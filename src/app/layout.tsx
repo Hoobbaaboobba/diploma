@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import ConvexClientProvider from "@/entities/ConvexProvider/ConvexClientProvider";
+import { redirect } from "next/navigation";
+import { getSession } from "../../lib";
 
 const inter = Inter({ subsets: ["latin"] });
 

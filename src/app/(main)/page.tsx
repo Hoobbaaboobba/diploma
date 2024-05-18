@@ -9,10 +9,14 @@ export default async function Home() {
     return <LoginForm />;
   }
 
+  const jsonData = JSON.stringify(session, null, 2);
+
+  // Parse the JSON string into a JavaScript object
+  const sessionData = JSON.parse(jsonData);
+
   return (
     <div className="w-full h-full flex justify-center items-center">
-      {JSON.stringify(session, null, 2)}
-      <CreateRoom />
+      <CreateRoom session={sessionData} />
     </div>
   );
 }

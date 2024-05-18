@@ -1,62 +1,57 @@
 "use client";
 
 import { Button } from "@/shared/ui/button";
-import { v4 as uuidv4 } from "uuid";
-import { Input } from "@/shared/ui/input";
-import { useForm } from "react-hook-form";
 
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/shared/ui/form";
-import { useTransition } from "react";
-import { loginSchema } from "../../../../schemas/loginSchema";
-import { login } from "../../../../lib";
+import { useQuery } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
+import { Loader2, PlusCircle, Trash } from "lucide-react";
+import { useApiMutation } from "@/entities/mutation/use-api-mutation";
+import Question from "./Question";
+import { Skeleton } from "@/shared/ui/skeleton";
 
-const userId = uuidv4();
+interface QuestionsListProps {
+  roomId: string | undefined;
+}
 
-export default function QuestionsList() {
-  const [isPending, setTransition] = useTransition();
+export default function QuestionsList({ roomId }: QuestionsListProps) {
+  const { mutate, pending } = useApiMutation(api.questions.create);
 
-  const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      id: userId,
-      name: "",
-    },
+  const getQuestions = useQuery(api.questions.get, {
+    roomId: roomId as string,
   });
 
-  async function onSubmit(values: z.infer<typeof loginSchema>) {
-    setTransition(async () => {
-      await login(values);
+  function onPlus() {
+    return mutate({
+      roomId: roomId,
     });
   }
+
+  if (!getQuestions) {
+    return (
+      <div className="w-full flex flex-col gap-10 justify-center items-center mt-10">
+        <Skeleton className="w-[600px] h-[202px]" />
+        <Skeleton className="w-[600px] h-[202px]" />
+      </div>
+    );
+  }
+
   return (
-    <section>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel></FormLabel>
-                <FormControl>
-                  <Input placeholder="shadcn" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+    <>
+      {getQuestions.map((question, index) => (
+        <div
+          key={question._id}
+          className="flex flex-col items-center justify-center py-8"
+        >
+          <Question
+            id={question._id}
+            content={question.content}
+            index={index}
           />
-          <Button type="submit">Start</Button>
-        </form>
-      </Form>
-    </section>
+        </div>
+      ))}
+      <Button onClick={onPlus} variant="outline" size="icon" className="my-6">
+        {pending ? <Loader2 className="animate-spin" /> : <PlusCircle />}
+      </Button>
+    </>
   );
 }

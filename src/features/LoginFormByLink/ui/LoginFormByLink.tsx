@@ -26,9 +26,20 @@ import { api } from "../../../../convex/_generated/api";
 
 const userId = uuidv4();
 
-export default function LoginForm() {
+interface LoginFormByLinkProps {
+  params: {
+    roomId: string;
+  };
+  session: any;
+}
+export default function LoginFormByLink({
+  params,
+  session,
+}: LoginFormByLinkProps) {
   const [isPending, setTransition] = useTransition();
   const { mutate, pending } = useApiMutation(api.users.createUser);
+
+  const { mutate: createPlayer } = useApiMutation(api.players.create);
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -42,7 +53,14 @@ export default function LoginForm() {
     setTransition(async () => {
       await login(values);
     });
-    return mutate({
+    createPlayer({
+      name: session.user.name,
+      playerId: session.user.id,
+      roomId: params.roomId,
+      role: "Admin",
+      isReady: false,
+    });
+    mutate({
       userId: values.id,
       name: values.name,
     });

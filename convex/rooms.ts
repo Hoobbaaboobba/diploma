@@ -1,19 +1,15 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { getSession } from "../lib";
 
 export const createRoom = mutation({
   args: {
+    authorID: v.string(),
     createId: v.string(),
   },
   handler: async (ctx, args) => {
-    const session = await getSession();
-
-    if (!session) {
-      throw new Error("Unauthorized");
-    }
-
     await ctx.db.insert("Rooms", {
+      authorID: args.authorID,
+      isStart: false,
       createId: args.createId,
       icebergQuestionContent: "",
     });
@@ -22,13 +18,27 @@ export const createRoom = mutation({
 
 export const getRoom = query({
   args: {
-    roomId: v.id("Rooms"),
+    createId: v.string(),
   },
   handler: async (ctx, args) => {
-    return ctx.db
+    const room = ctx.db
       .query("Rooms")
-      .filter((q) => q.eq(q.field("_id"), args.roomId))
+      .withIndex("by_create", (q) => q.eq("createId", args.createId))
       .collect();
+
+    return room;
+  },
+});
+
+export const updateStart = mutation({
+  args: {
+    roomId: v.id("Rooms"),
+    isStart: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.roomId, {
+      isStart: args.isStart,
+    });
   },
 });
 
