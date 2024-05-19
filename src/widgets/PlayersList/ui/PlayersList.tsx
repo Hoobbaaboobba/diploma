@@ -56,16 +56,6 @@ export default function PlayersList({ params, session }: PlayersListProps) {
     );
   }
 
-  if (getPlayers.filter((e) => e.playerId === session.user.id).length === 0) {
-    createPlayer({
-      name: session.user.name,
-      playerId: session.user.id,
-      roomId: params.roomId,
-      role: "quest",
-      isReady: false,
-    });
-  }
-
   return (
     <div className="w-full container p-0 flex flex-col gap-16 items-center mt-10">
       <div className="flex flex-col justify-center container items-center gap-2">
