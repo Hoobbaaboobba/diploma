@@ -41,11 +41,11 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
 
   const roomId = getRoom?.map((e) => e._id).toString();
 
-  function onSaveIceberg() {
-    if (!getRoom) {
-      return null;
-    }
+  if (!getRoom) {
+    return <div>Loading...</div>;
+  }
 
+  function onSaveIceberg() {
     return mutate({
       roomId: roomId,
       icebergQuestionContent: icebergValue,
