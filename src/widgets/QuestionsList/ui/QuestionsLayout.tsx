@@ -68,10 +68,6 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
     );
   }
 
-  if (getRoom.map((e) => e.isStart).toString() === "true") {
-    router.push("/");
-  }
-
   /* 
     getRoom возвращает на массив объектов, 
     но, так как в массиве только один объект,
