@@ -6,12 +6,13 @@ import { useRouter } from "next/navigation";
 import { api } from "../../../../convex/_generated/api";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 import { Loader2 } from "lucide-react";
+import { useQuery } from "convex/react";
 
 interface StartButtonProps {
   params: {
     roomId: string;
   };
-  currentUserRole: string;
+  userId: string;
   getPlayers:
     | {
         _id: Id<"Players">;
@@ -28,14 +29,16 @@ interface StartButtonProps {
 export default function StartButton({
   params,
   getPlayers,
-  currentUserRole,
+  userId,
 }: StartButtonProps) {
   const isEverybodyReady =
     getPlayers?.length === getPlayers?.filter((e) => e.isReady === true).length;
 
+  const { mutate: createAnswers } = useApiMutation(api.answers.create);
+
   /* 
-    Этот хук начинает игру, делает isStart === true в бд
-    Мы также вытаскиваем функцию и состояние загрузки
+  Этот хук начинает игру, делает isStart === true в бд
+  Мы также вытаскиваем функцию и состояние загрузки
   */
   const { mutate, pending: pending } = useApiMutation(api.rooms.updateStart);
 
@@ -47,10 +50,8 @@ export default function StartButton({
     });
   }
   return (
-    currentUserRole === "Admin" && (
-      <Button onClick={onClick} disabled={!isEverybodyReady}>
-        {pending ? <Loader2 className="animate-spin" /> : "Start"}
-      </Button>
-    )
+    <Button onClick={onClick} disabled={!isEverybodyReady}>
+      {pending ? <Loader2 className="animate-spin" /> : "Start"}
+    </Button>
   );
 }

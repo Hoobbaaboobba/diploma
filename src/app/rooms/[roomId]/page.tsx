@@ -21,8 +21,6 @@ export default async function RoomPage({ params }: RoomPageProps) {
     return redirect("/");
   }
 
-  redirect("/");
-
   return (
     <div className="w-full h-full flex justify-center items-center">
       <Timer params={params} />

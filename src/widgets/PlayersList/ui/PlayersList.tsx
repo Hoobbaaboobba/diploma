@@ -35,7 +35,11 @@ export default function PlayersList({ params, session }: PlayersListProps) {
 
   const { mutate, pending } = useApiMutation(api.players.updateReady);
 
-  if (getRoom?.isStart) {
+  const getQuestions = useQuery(api.questions.get, {
+    roomId: params.roomId as Id<"Rooms">,
+  });
+
+  if (getRoom?.isStart && getQuestions) {
     return redirect(`/rooms/${params.roomId}`);
   }
 
@@ -98,9 +102,7 @@ export default function PlayersList({ params, session }: PlayersListProps) {
       <StartButton
         params={params}
         getPlayers={getPlayers}
-        currentUserRole={
-          getCurrentUser?.map((e) => e.role).toString() as string
-        }
+        userId={session.user.id}
       />
     </div>
   );

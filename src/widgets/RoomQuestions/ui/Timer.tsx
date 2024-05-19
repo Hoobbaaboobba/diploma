@@ -37,7 +37,9 @@ export default function Timer({ params }: RoomQuestionsProps) {
   }, [getRoom?.countDown, mutate, params.roomId]);
 
   return (
-    <div className="flex absolute left-5 top-5 justify-center items-center text-lg font-bold timer">
+    <div
+      className={`${(getRoom?.countDown as number) > 20 ? "text-emerald-400" : "text-rose-400 timer"} flex absolute left-5 top-5 justify-center items-center text-xl font-bold`}
+    >
       {isTimerEnd ? "Timer end" : getRoom?.countDown}
     </div>
   );

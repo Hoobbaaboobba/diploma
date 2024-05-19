@@ -40,7 +40,9 @@ export default defineSchema({
     userId: v.string(), // id пользователя, который ответил на вопрос
     questionId: v.id("Questions"), // id вопроса, на который был дан ответ
     content: v.string(), // содержание ответа
+    roomId: v.id("Rooms"),
   })
     //.index("by_user", ["userId"]) // поиск ответа по id пользователя
-    .index("by_question", ["questionId"]), // поиск ответа по id вопроса
+    .index("by_question", ["questionId"]) // поиск ответа по id вопроса
+    .index("by_room", ["roomId"]),
 });

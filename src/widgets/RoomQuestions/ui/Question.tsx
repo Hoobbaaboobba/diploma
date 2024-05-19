@@ -4,6 +4,7 @@ import { Button } from "@/shared/ui/button";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -33,34 +34,42 @@ export default function Question({
   const [isSaved, setIsSaved] = useState(false);
 
   const { mutate, pending } = useApiMutation(api.answers.create);
+  const { mutate: updateAnswer, pending: updateAnswerPending } = useApiMutation(
+    api.answers.update
+  );
 
   const getAnswers = useQuery(api.answers.get, {
-    questionId: id as Id<"Questions">,
+    questionId: id,
   });
 
   function onSave(questionId: Id<"Questions">) {
-    if (getAnswers?.filter((e) => e._id))
-      return mutate({
-        userId: userId,
-        questionId: questionId,
-        content: questionValue,
-      });
+    if (!getAnswers) {
+      return null;
+    }
+
+    return updateAnswer({
+      answerId: getAnswers.map((e) => e._id).toString,
+    });
   }
 
   return (
     <Card className="w-full relative">
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
-          Question {index + 1}
+          {content}
         </CardTitle>
+        <CardDescription>Question {index + 1}</CardDescription>
       </CardHeader>
       <CardContent className="relative">
-        <Input
-          onBlur={() => onSave(id)}
-          defaultValue={content}
-          onChange={(e) => setQuestionValue(e.target.value)}
-          className={`${questionValue === content && content.length > 0 && "border-emerald-400"}`}
-        />
+        {getAnswers?.map((e) => (
+          <Input
+            onBlur={() => onSave(id)}
+            key={e._id}
+            defaultValue={content}
+            onChange={(e) => setQuestionValue(e.target.value)}
+            className={`${questionValue === content && content.length > 0 && "border-emerald-400"}`}
+          />
+        ))}
         {questionValue === content && content.length > 0 && (
           <div className="absolute text-sm flex justify-center items-center top-3 right-8">
             <Check className="w-4 h-4 text-green-600" />
