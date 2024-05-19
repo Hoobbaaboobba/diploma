@@ -39,7 +39,7 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
     Через rooms мы обращаемся к методу getRoom
     Он принимает id создания из url /create/****.
   */
-  const getRoom = useQuery(api.rooms.getRoom, {
+  const getRoom = useQuery(api.rooms.getRoomByCreateId, {
     createId: params.createId,
   });
 
@@ -54,14 +54,6 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
   const getQuestions = useQuery(api.questions.get, {
     roomId: roomId as Id<"Rooms">,
   });
-
-  /* 
-    Этот хук начинает игру, делает isStart === true в бд
-    Мы также вытаскиваем функцию и состояние загрузки
-  */
-  const { mutate: updateStart, pending: pendingStart } = useApiMutation(
-    api.rooms.updateStart
-  );
 
   /* 
     Этот хук создает игрока
@@ -81,7 +73,7 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
   }
 
   function getIn() {
-    router.push(`/rooms/${roomId}`);
+    router.push(`/waitingrooms/${roomId}`);
   }
 
   if (getRoom.map((e) => e.isStart).toString() === "true") {
@@ -104,13 +96,7 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
       roomId: roomId, // Из переменной выше берем id комнаты
       role: "Admin", // Тот, кто создал комнату, получает роль админа
       isReady: false, // По умолчанию игрок не готов
-    });
-
-    //Вызываем функцию начала игры, которую вытащили из useApiMutation выше
-    updateStart({
-      roomId: roomId, // Из переменной выше берем id комнаты
-      isStart: true, // Создание комнаты завершено, ставим true
-    }).then(() => router.push(`/rooms/${roomId}`)); // После чего перкидываем пользователя в саму комнату
+    }).then(() => router.push(`/waitingrooms/${roomId}`)); // После чего перкидываем пользователя в саму комнату
   }
 
   // Если страница создания комнаты загружена, рисуем вопросы
@@ -126,16 +112,10 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
       <QuestionsList roomId={roomId} />
       <Button
         className="mt-6 w-[100px]"
-        disabled={
-          getQuestions?.length === 0 || (pendingStart && pendingCreatePlayer)
-        }
+        disabled={getQuestions?.length === 0 || pendingCreatePlayer}
         onClick={onStart}
       >
-        {pendingStart && pendingCreatePlayer ? (
-          <Loader2 className="animate-spin" />
-        ) : (
-          "Start"
-        )}
+        {pendingCreatePlayer ? <Loader2 className="animate-spin" /> : "Start"}
       </Button>
     </div>
   );

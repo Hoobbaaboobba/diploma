@@ -9,6 +9,7 @@ export default defineSchema({
     authorID: v.string(), // id того, кто создал комнату
     isStart: v.boolean(), // началась ли конференция
     icebergQuestionContent: v.string(), // конент Iceberg вопроса
+    countDown: v.number(),
   }).index("by_create", ["createId"]), // поиск таблицы по id создания
 
   // Схема таблицы пользователей в базе данных
@@ -36,10 +37,10 @@ export default defineSchema({
 
   // Схема ответов на вопросы
   Answers: defineTable({
-    userId: v.id("Users"), // id пользователя, который ответил на вопрос
+    userId: v.string(), // id пользователя, который ответил на вопрос
     questionId: v.id("Questions"), // id вопроса, на который был дан ответ
     content: v.string(), // содержание ответа
   })
-    .index("by_user", ["userId"]) // поиск ответа по id пользователя
+    //.index("by_user", ["userId"]) // поиск ответа по id пользователя
     .index("by_question", ["questionId"]), // поиск ответа по id вопроса
 });

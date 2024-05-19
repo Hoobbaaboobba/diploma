@@ -8,9 +8,9 @@ import { Button } from "@/shared/ui/button";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { LoginFormByLink } from "@/features/LoginFormByLink";
-// import StartButton from "./StartButton";
-// import { useRouter } from "next/router";
-// import { redirect } from "next/navigation";
+import StartButton from "./StartButton";
+import { useRouter } from "next/router";
+import { redirect } from "next/navigation";
 
 interface PlayersListProps {
   params: {
@@ -29,15 +29,15 @@ export default function PlayersList({ params, session }: PlayersListProps) {
     playerId: session.user.id,
   });
 
-  // const getRoom = useQuery(api.rooms.getRoomById, {
-  //   roomId: params.roomId as Id<"Rooms">,
-  // });
+  const getRoom = useQuery(api.rooms.getRoomById, {
+    roomId: params.roomId as Id<"Rooms">,
+  });
 
   const { mutate, pending } = useApiMutation(api.players.updateReady);
 
-  // if (getRoom?.isStart) {
-  //   return redirect(`/rooms/${params.roomId}`);
-  // }
+  if (getRoom?.isStart) {
+    return redirect(`/rooms/${params.roomId}`);
+  }
 
   if (getPlayers?.filter((e) => e.playerId === session.user.id).length === 0) {
     return <LoginFormByLink params={params} />;
@@ -95,13 +95,13 @@ export default function PlayersList({ params, session }: PlayersListProps) {
           {pending ? <Loader2 className="animate-spin" /> : "Ready"}
         </Button>
       )}
-      {/* <StartButton
+      <StartButton
         params={params}
         getPlayers={getPlayers}
         currentUserRole={
           getCurrentUser?.map((e) => e.role).toString() as string
         }
-      /> */}
+      />
     </div>
   );
 }

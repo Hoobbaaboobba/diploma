@@ -1,7 +1,7 @@
-import { LoginForm } from "@/features/LoginForm";
+import { RoomQuestions } from "@/widgets/RoomQuestions";
+import Timer from "@/widgets/RoomQuestions/ui/Timer";
+import { redirect } from "next/navigation";
 import { getSession } from "../../../../lib";
-import { PlayersList } from "@/widgets/PlayersList";
-import { LoginFormByLink } from "@/features/LoginFormByLink";
 
 interface RoomPageProps {
   params: {
@@ -18,8 +18,15 @@ export default async function RoomPage({ params }: RoomPageProps) {
   const sessionData = JSON.parse(jsonData);
 
   if (!session) {
-    return <LoginFormByLink params={params} />;
+    return redirect("/");
   }
 
-  return <PlayersList params={params} session={sessionData} />;
+  redirect("/");
+
+  return (
+    <div className="w-full h-full flex justify-center items-center">
+      <Timer params={params} />
+      <RoomQuestions params={params} session={sessionData} />
+    </div>
+  );
 }

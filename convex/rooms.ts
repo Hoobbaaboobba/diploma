@@ -11,12 +11,13 @@ export const createRoom = mutation({
       authorID: args.authorID,
       isStart: false,
       createId: args.createId,
+      countDown: 10,
       icebergQuestionContent: "",
     });
   },
 });
 
-export const getRoom = query({
+export const getRoomByCreateId = query({
   args: {
     createId: v.string(),
   },
@@ -30,6 +31,17 @@ export const getRoom = query({
   },
 });
 
+export const getRoomById = query({
+  args: {
+    roomId: v.id("Rooms"),
+  },
+  handler: async (ctx, args) => {
+    const room = ctx.db.get(args.roomId);
+
+    return room;
+  },
+});
+
 export const updateStart = mutation({
   args: {
     roomId: v.id("Rooms"),
@@ -38,6 +50,18 @@ export const updateStart = mutation({
   handler: async (ctx, args) => {
     await ctx.db.patch(args.roomId, {
       isStart: args.isStart,
+    });
+  },
+});
+
+export const updateTimer = mutation({
+  args: {
+    roomId: v.id("Rooms"),
+    countDown: v.number(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.roomId, {
+      countDown: args.countDown,
     });
   },
 });

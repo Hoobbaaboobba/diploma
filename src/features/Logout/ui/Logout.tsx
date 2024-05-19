@@ -5,19 +5,23 @@ import { Loader2, LogOut } from "lucide-react";
 import { useTransition } from "react";
 import { logout } from "../../../../lib";
 import { redirect } from "next/navigation";
+import { useApiMutation } from "@/entities/mutation/use-api-mutation";
+import { api } from "../../../../convex/_generated/api";
+import { Id } from "../../../../convex/_generated/dataModel";
 
 interface LogOutProps {
   session: any;
 }
 
 export default function Logout({ session }: LogOutProps) {
-  const [isPending, startTransition] = useTransition();
+  const { mutate, pending } = useApiMutation(api.players.deletePlayer);
 
-  function logOut() {
-    startTransition(async () => {
-      await logout();
-      redirect("/");
+  async function logOut() {
+    await mutate({
+      playerId: session.user.id as Id<"Players">,
     });
+    await logout();
+    redirect("/");
   }
 
   return session ? (
@@ -27,7 +31,7 @@ export default function Logout({ session }: LogOutProps) {
       size="icon"
       variant="destructive"
     >
-      {isPending ? <Loader2 className="animate-spin" /> : <LogOut />}
+      {pending ? <Loader2 className="animate-spin" /> : <LogOut />}
     </Button>
   ) : null;
 }
