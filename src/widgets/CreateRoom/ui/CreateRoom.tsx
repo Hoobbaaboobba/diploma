@@ -28,7 +28,11 @@ export default function CreateRoom({ session }: CreateRoomProps) {
       createId: createId,
     });
 
-    if (!pending) return router.push(`/create/${createId}`);
+    if (!pending) {
+      setTimeout(() => {
+        router.push(`/create/${createId}`);
+      }, 500);
+    }
   };
   return (
     <Button onClick={onClick} className="w-[200px]">

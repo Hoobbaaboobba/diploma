@@ -8,6 +8,7 @@ import { Button } from "@/shared/ui/button";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 import { useState } from "react";
 import { Skeleton } from "@/shared/ui/skeleton";
+import { LoginFormByLink } from "@/features/LoginFormByLink";
 
 interface PlayersListProps {
   params: {
@@ -26,6 +27,10 @@ export default function PlayersList({ params, session }: PlayersListProps) {
   });
 
   const { mutate, pending } = useApiMutation(api.players.updateReady);
+
+  if (getPlayers?.filter((e) => e.playerId === session.user.id).length === 0) {
+    return <LoginFormByLink params={params} />;
+  }
 
   function onReady() {
     return mutate({
