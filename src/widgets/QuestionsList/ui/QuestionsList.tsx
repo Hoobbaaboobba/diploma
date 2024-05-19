@@ -37,11 +37,11 @@ export default function QuestionsList({ roomId }: QuestionsListProps) {
   }
 
   return (
-    <div className="container p-0">
+    <div className="container p-0 space-y-8">
       {getQuestions.map((question, index) => (
         <div
           key={question._id}
-          className="flex flex-col items-center justify-center py-8"
+          className="flex flex-col items-center justify-center"
         >
           <Question
             id={question._id}
@@ -51,7 +51,7 @@ export default function QuestionsList({ roomId }: QuestionsListProps) {
         </div>
       ))}
       <div className="flex justify-center items-center">
-        <Button onClick={onPlus} variant="outline">
+        <Button onClick={onPlus} variant="outline" className="w-[150px]">
           {pending ? <Loader2 className="animate-spin" /> : "Мake question"}
         </Button>
       </div>

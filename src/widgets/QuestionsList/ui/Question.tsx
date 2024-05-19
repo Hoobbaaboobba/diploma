@@ -50,11 +50,21 @@ export default function Question({ id, content, index }: QuestionProps) {
   return (
     <Card className="w-full relative">
       <CardHeader>
-        <CardTitle>Question {index + 1}</CardTitle>
+        <CardTitle className="flex justify-between items-center">
+          Question {index + 1}{" "}
+          <Button
+            disabled={pendingDeleteQ}
+            onClick={() => onDelete(id)}
+            variant="destructive"
+            size="icon"
+          >
+            {pendingDeleteQ ? <Loader2 className="animate-spin" /> : <Trash />}
+          </Button>
+        </CardTitle>
       </CardHeader>
       <CardContent className="relative">
         <Input
-          disabled={pendingUpdateQ}
+          onBlur={() => onSave(id)}
           defaultValue={content}
           onChange={(e) => setQuestionValue(e.target.value)}
           className={`${questionValue === content && content.length > 0 && "border-emerald-400"}`}
@@ -65,23 +75,7 @@ export default function Question({ id, content, index }: QuestionProps) {
           </div>
         )}
       </CardContent>
-      <CardFooter className="flex justify-between">
-        <Button
-          disabled={pendingUpdateQ || questionValue.length === 0}
-          onClick={() => onSave(id)}
-          className="w-[60px]"
-        >
-          {pendingUpdateQ ? <Loader2 className="animate-spin" /> : "Save"}
-        </Button>
-        <Button
-          disabled={pendingDeleteQ}
-          onClick={() => onDelete(id)}
-          variant="destructive"
-          size="icon"
-        >
-          {pendingDeleteQ ? <Loader2 className="animate-spin" /> : <Trash />}
-        </Button>
-      </CardFooter>
+      <CardFooter></CardFooter>
     </Card>
   );
 }

@@ -44,6 +44,18 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
   });
 
   /* 
+    getRoom возвращает на массив объектов, 
+    но, так как в массиве только один объект,
+    мы с помощью метода map вытаскиваем id объекта
+    и преобразуем в строку
+  */
+  const roomId = getRoom?.map((e) => e._id).toString() as string;
+
+  const getQuestions = useQuery(api.questions.get, {
+    roomId: roomId as Id<"Rooms">,
+  });
+
+  /* 
     Этот хук начинает игру, делает isStart === true в бд
     Мы также вытаскиваем функцию и состояние загрузки
   */
@@ -68,14 +80,6 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
     );
   }
 
-  /* 
-    getRoom возвращает на массив объектов, 
-    но, так как в массиве только один объект,
-    мы с помощью метода map вытаскиваем id объекта
-    и преобразуем в строку
-  */
-  const roomId = getRoom.map((e) => e._id).toString();
-
   // Создаем функцию, которая вызывается при нажатии кнопки "Start"
   function onStart() {
     //Вызываем функцию создания игрока, которую вытащили из useApiMutation выше
@@ -96,7 +100,7 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
 
   // Если страница создания комнаты загружена, рисуем вопросы
   return (
-    <div className="flex container flex-col items-center justify-center py-8">
+    <div className="flex container flex-col items-end justify-center py-8">
       <IcebergQuestion
         roomId={roomId}
         icebergQuestionContent={getRoom
@@ -106,8 +110,10 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
       <Separator className="w-full h-[2px] my-10" />
       <QuestionsList roomId={roomId} />
       <Button
-        className="mt-6"
-        disabled={pendingStart && pendingCreatePlayer}
+        className="mt-6 w-[100px]"
+        disabled={
+          getQuestions?.length === 0 || (pendingStart && pendingCreatePlayer)
+        }
         onClick={onStart}
       >
         {pendingStart && pendingCreatePlayer ? (

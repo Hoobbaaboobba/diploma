@@ -6,7 +6,6 @@ import { Id } from "../../../../convex/_generated/dataModel";
 import { Check, Loader2 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
-import { useState } from "react";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { LoginFormByLink } from "@/features/LoginFormByLink";
 
