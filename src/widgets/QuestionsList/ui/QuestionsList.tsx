@@ -51,8 +51,8 @@ export default function QuestionsList({ roomId }: QuestionsListProps) {
         </div>
       ))}
       <div className="flex justify-center items-center">
-        <Button onClick={onPlus} variant="outline" size="icon" className="my-6">
-          {pending ? <Loader2 className="animate-spin" /> : <PlusCircle />}
+        <Button onClick={onPlus} variant="outline">
+          {pending ? <Loader2 className="animate-spin" /> : "Мake question"}
         </Button>
       </div>
     </div>

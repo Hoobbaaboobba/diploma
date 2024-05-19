@@ -10,12 +10,14 @@ export default defineSchema({
     isStart: v.boolean(), // началась ли конференция
     icebergQuestionContent: v.string(), // конент Iceberg вопроса
   }).index("by_create", ["createId"]), // поиск таблицы по id создания
+
   // Схема таблицы пользователей в базе данных
   Users: defineTable({
     userId: v.string(), // id пользователя
     name: v.string(), // имя пользователя
   }),
-  // Схемы игроков (так как каждый пользователь может участвовать в нескольких коматах)
+
+  // Схема игроков (так как каждый пользователь может участвовать в нескольких коматах)
   Players: defineTable({
     playerId: v.string(), // id игрока
     name: v.string(), // имя игрока
@@ -25,11 +27,13 @@ export default defineSchema({
   })
     .index("by_room", ["roomId"]) // поиск игрока по id комнаты
     .index("by_playerId", ["playerId"]), // поиск игрока по id игрока
+
   // Схема вопросов
   Questions: defineTable({
     roomId: v.id("Rooms"), // id комнаты, к которой относится вопрос
     content: v.string(), // содержание вопроса
   }).index("by_room", ["roomId"]), // поиск вопроса по id комнаты
+
   // Схема ответов на вопросы
   Answers: defineTable({
     userId: v.id("Users"), // id пользователя, который ответил на вопрос

@@ -18,6 +18,9 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/shared/ui/skeleton";
+import { Id } from "../../../../convex/_generated/dataModel";
+import IcebergQuestion from "./IcebergQuestion";
+import { Separator } from "@/shared/ui/separator";
 
 interface QuestionsLayout {
   params: {
@@ -27,42 +30,36 @@ interface QuestionsLayout {
 }
 
 export default function QuestionsLayout({ params, session }: QuestionsLayout) {
-  const [icebergValue, setIcebergValue] = useState("");
-
+  // Встроенный хук в next js, который позволяет перемещаться по ссылкам
   const router = useRouter();
 
+  /*
+    Хук convex (useQuery), который обращается к бд и создает объект
+    С помощью api мы обращаемся к комнатам rooms (rooms.ts)
+    Через rooms мы обращаемся к методу getRoom
+    Он принимает id создания из url /create/****.
+  */
   const getRoom = useQuery(api.rooms.getRoom, {
     createId: params.createId,
   });
-  const { mutate, pending } = useApiMutation(api.rooms.createIcebergQuestion);
+
+  /* 
+    Этот хук начинает игру, делает isStart === true в бд
+    Мы также вытаскиваем функцию и состояние загрузки
+  */
   const { mutate: updateStart, pending: pendingStart } = useApiMutation(
     api.rooms.updateStart
   );
-  const { mutate: createPlayer } = useApiMutation(api.players.create);
 
-  const roomId = getRoom?.map((e) => e._id).toString();
+  /* 
+    Этот хук создает игрока
+    Мы также вытаскиваем функцию и состояние загрузки
+  */
+  const { mutate: createPlayer, pending: pendingCreatePlayer } = useApiMutation(
+    api.players.create
+  );
 
-  function onSaveIceberg() {
-    return mutate({
-      roomId: roomId,
-      icebergQuestionContent: icebergValue,
-    });
-  }
-
-  function onStart() {
-    createPlayer({
-      name: session.user.name,
-      playerId: session.user.id,
-      roomId: roomId,
-      role: "Admin",
-      isReady: false,
-    });
-    updateStart({
-      roomId: roomId,
-      isStart: true,
-    }).then(() => router.push(`/rooms/${roomId}`));
-  }
-
+  // Пока страница создания комнаты загружается, рисуем красивый UI
   if (!getRoom) {
     return (
       <div className="container mt-10">
@@ -71,25 +68,57 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
     );
   }
 
+  if (getRoom.map((e) => e.isStart).toString() === "true") {
+    router.push("/");
+  }
+
+  /* 
+    getRoom возвращает на массив объектов, 
+    но, так как в массиве только один объект,
+    мы с помощью метода map вытаскиваем id объекта
+    и преобразуем в строку
+  */
+  const roomId = getRoom.map((e) => e._id).toString();
+
+  // Создаем функцию, которая вызывается при нажатии кнопки "Start"
+  function onStart() {
+    //Вызываем функцию создания игрока, которую вытащили из useApiMutation выше
+    createPlayer({
+      name: session.user.name, // Из сессии в cookie берем имя пользователя
+      playerId: session.user.id, // Из сессии в cookie берем id пользователя
+      roomId: roomId, // Из переменной выше берем id комнаты
+      role: "Admin", // Тот, кто создал комнату, получает роль админа
+      isReady: false, // По умолчанию игрок не готов
+    });
+
+    //Вызываем функцию начала игры, которую вытащили из useApiMutation выше
+    updateStart({
+      roomId: roomId, // Из переменной выше берем id комнаты
+      isStart: true, // Создание комнаты завершено, ставим true
+    }).then(() => router.push(`/rooms/${roomId}`)); // После чего перкидываем пользователя в саму комнату
+  }
+
+  // Если страница создания комнаты загружена, рисуем вопросы
   return (
     <div className="flex container flex-col items-center justify-center py-8">
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Do you want to make an Icebergquestion?</CardTitle>
-          <CardDescription>It is not important!</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Input onChange={(e) => setIcebergValue(e.target.value)} />
-        </CardContent>
-        <CardFooter>
-          <Button onClick={onSaveIceberg} className="w-[60px]">
-            {pending ? <Loader2 className="animate-spin" /> : "Save"}
-          </Button>
-        </CardFooter>
-      </Card>
+      <IcebergQuestion
+        roomId={roomId}
+        icebergQuestionContent={getRoom
+          .map((e) => e.icebergQuestionContent)
+          .toString()}
+      />
+      <Separator className="w-full h-[2px] my-10" />
       <QuestionsList roomId={roomId} />
-      <Button onClick={onStart}>
-        {pendingStart ? <Loader2 className="animate-spin" /> : "Start"}
+      <Button
+        className="mt-6"
+        disabled={pendingStart && pendingCreatePlayer}
+        onClick={onStart}
+      >
+        {pendingStart && pendingCreatePlayer ? (
+          <Loader2 className="animate-spin" />
+        ) : (
+          "Start"
+        )}
       </Button>
     </div>
   );

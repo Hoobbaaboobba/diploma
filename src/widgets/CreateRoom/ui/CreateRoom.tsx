@@ -31,7 +31,7 @@ export default function CreateRoom({ session }: CreateRoomProps) {
     router.push(`/create/${createId}`);
   };
   return (
-    <Button onClick={onClick} className="w-[200px]">
+    <Button onClick={onClick} className="w-[200px] mt-[400px]">
       {pending ? <Loader2 className="animate-spin" /> : "Make room"}
     </Button>
   );

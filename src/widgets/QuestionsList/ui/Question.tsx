@@ -57,9 +57,9 @@ export default function Question({ id, content, index }: QuestionProps) {
           disabled={pendingUpdateQ}
           defaultValue={content}
           onChange={(e) => setQuestionValue(e.target.value)}
-          className={`${isSaved && questionValue.length !== 0 && "border-emerald-400"}`}
+          className={`${questionValue === content && content.length > 0 && "border-emerald-400"}`}
         />
-        {isSaved && questionValue.length !== 0 && (
+        {questionValue === content && content.length > 0 && (
           <div className="absolute text-sm flex justify-center items-center top-3 right-8">
             <Check className="w-4 h-4 text-green-600" />
           </div>
@@ -71,7 +71,7 @@ export default function Question({ id, content, index }: QuestionProps) {
           onClick={() => onSave(id)}
           className="w-[60px]"
         >
-          Save
+          {pendingUpdateQ ? <Loader2 className="animate-spin" /> : "Save"}
         </Button>
         <Button
           disabled={pendingDeleteQ}
