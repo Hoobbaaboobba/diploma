@@ -39,12 +39,14 @@ export const get = query({
 
 export const getCurrent = query({
   args: {
+    roomId: v.id("Rooms"),
     playerId: v.string(),
   },
   handler: async (ctx, args) => {
     const players = ctx.db
       .query("Players")
       .withIndex("by_playerId", (q) => q.eq("playerId", args.playerId))
+      .filter((q) => q.eq(q.field("roomId"), args.roomId))
       .collect();
 
     return players;
@@ -60,5 +62,14 @@ export const updateReady = mutation({
     await ctx.db.patch(args.playerId, {
       isReady: args.isReady,
     });
+  },
+});
+
+export const deletePlayer = mutation({
+  args: {
+    playerId: v.id("Players"),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.delete(args.playerId);
   },
 });
