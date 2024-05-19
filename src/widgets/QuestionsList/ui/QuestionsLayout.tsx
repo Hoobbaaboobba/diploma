@@ -17,6 +17,7 @@ import { useQuery } from "convex/react";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 interface QuestionsLayout {
   params: {
@@ -41,10 +42,6 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
 
   const roomId = getRoom?.map((e) => e._id).toString();
 
-  if (!getRoom) {
-    return <div>Loading...</div>;
-  }
-
   function onSaveIceberg() {
     return mutate({
       roomId: roomId,
@@ -64,6 +61,14 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
       roomId: roomId,
       isStart: true,
     }).then(() => router.push(`/rooms/${roomId}`));
+  }
+
+  if (!getRoom) {
+    return (
+      <div className="container mt-10">
+        <Skeleton className="w-full h-[202px]" />
+      </div>
+    );
   }
 
   return (
