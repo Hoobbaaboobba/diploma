@@ -80,6 +80,21 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
     );
   }
 
+  function getIn() {
+    router.push(`/rooms/${roomId}`);
+  }
+
+  if (getRoom.map((e) => e.isStart).toString() === "true") {
+    return (
+      <div className="container mt-40 flex flex-col justify-center items-center">
+        <p className="text-2xl font-bold">Conference is ongoing</p>
+        <Button onClick={getIn} className="mt-2">
+          Get in
+        </Button>
+      </div>
+    );
+  }
+
   // Создаем функцию, которая вызывается при нажатии кнопки "Start"
   function onStart() {
     //Вызываем функцию создания игрока, которую вытащили из useApiMutation выше
