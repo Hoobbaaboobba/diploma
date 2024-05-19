@@ -52,6 +52,7 @@ export default function IcebergQuestion({
       </CardHeader>
       <CardContent className="relative">
         <Input
+          onBlur={onSaveIceberg}
           disabled={pending}
           defaultValue={icebergQuestionContent}
           className={`${isSavedIceberg && icebergValue === icebergQuestionContent && "border-emerald-400"}`}
@@ -63,11 +64,7 @@ export default function IcebergQuestion({
           </div>
         )}
       </CardContent>
-      <CardFooter>
-        <Button disabled={pending} onClick={onSaveIceberg} className="w-[60px]">
-          {pending ? <Loader2 className="animate-spin" /> : "Save"}
-        </Button>
-      </CardFooter>
+      <CardFooter></CardFooter>
     </Card>
   );
 }
