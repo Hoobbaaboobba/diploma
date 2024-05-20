@@ -60,6 +60,7 @@ export default function LoginFormByLink({ params }: LoginFormByLinkProps) {
       roomId: params.roomId,
       role: "quest",
       isReady: false,
+      isAnswered: false,
     });
   }
 

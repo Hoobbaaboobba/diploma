@@ -10,45 +10,65 @@ import {
   CardTitle,
 } from "@/shared/ui/card";
 import { Input } from "@/shared/ui/input";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
-import { Check, Loader2, Trash } from "lucide-react";
+import { Check, Loader, Loader2, Plus, PlusCircle, Trash } from "lucide-react";
 import { useQuery } from "convex/react";
 
 interface QuestionProps {
-  id: Id<"Questions">;
+  QuestionId: Id<"Questions">;
   content: string;
   index: number;
   userId: string;
+  roomId: string;
 }
 
 export default function Question({
-  id,
+  QuestionId,
   content,
   index,
   userId,
+  roomId,
 }: QuestionProps) {
-  const [questionValue, setQuestionValue] = useState("");
-  const [isSaved, setIsSaved] = useState(false);
+  const [isLoader, setIsLoader] = useState(false);
 
   const { mutate, pending } = useApiMutation(api.answers.create);
   const { mutate: updateAnswer, pending: updateAnswerPending } = useApiMutation(
     api.answers.update
   );
+  const { mutate: deleteAnswer, pending: deleteAnswerPending } = useApiMutation(
+    api.answers.deleteAnswer
+  );
 
   const getAnswers = useQuery(api.answers.get, {
-    questionId: id,
+    questionId: QuestionId,
   });
 
-  function onSave(questionId: Id<"Questions">) {
-    if (!getAnswers) {
-      return null;
-    }
+  function onSave(e: ChangeEvent<HTMLInputElement>, answerId: Id<"Answers">) {
+    updateAnswer({
+      answerId: answerId,
+      content: e.target.value,
+    });
+    setIsLoader(true);
+    setTimeout(() => {
+      setIsLoader(false);
+    }, 1000);
+  }
 
-    return updateAnswer({
-      answerId: getAnswers.map((e) => e._id).toString,
+  function MakeAnswer() {
+    mutate({
+      userId: userId,
+      questionId: QuestionId,
+      content: "",
+      roomId: roomId,
+    });
+  }
+
+  function onDelete(answerId: Id<"Answers">) {
+    deleteAnswer({
+      answerId: answerId,
     });
   }
 
@@ -57,24 +77,38 @@ export default function Question({
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
           {content}
+          {isLoader && <Loader className="animate-spin w-4 h-4" />}
         </CardTitle>
         <CardDescription>Question {index + 1}</CardDescription>
       </CardHeader>
-      <CardContent className="relative">
-        {getAnswers?.map((e) => (
-          <Input
-            onBlur={() => onSave(id)}
-            key={e._id}
-            defaultValue={content}
-            onChange={(e) => setQuestionValue(e.target.value)}
-            className={`${questionValue === content && content.length > 0 && "border-emerald-400"}`}
-          />
-        ))}
-        {questionValue === content && content.length > 0 && (
-          <div className="absolute text-sm flex justify-center items-center top-3 right-8">
-            <Check className="w-4 h-4 text-green-600" />
-          </div>
-        )}
+      <CardContent className="space-y-4">
+        {getAnswers
+          ?.filter((e) => e.userId === userId)
+          .map((answer) => (
+            <div key={answer._id} className="flex gap-2">
+              <Input
+                disabled={deleteAnswerPending}
+                defaultValue={answer.content}
+                onChange={(e) => onSave(e, answer._id)}
+              />
+              <Button
+                disabled={deleteAnswerPending}
+                onClick={() => onDelete(answer._id)}
+                variant="destructive"
+                size="icon"
+              >
+                <Trash />
+              </Button>
+            </div>
+          ))}
+        <Button onClick={MakeAnswer}>
+          Add answer
+          {pending ? (
+            <Loader2 className="animate-spin ml-1 h-5" />
+          ) : (
+            <Plus strokeWidth={1.5} className="ml-1 h-5" />
+          )}
+        </Button>
       </CardContent>
       <CardFooter></CardFooter>
     </Card>

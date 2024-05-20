@@ -57,3 +57,12 @@ export const update = mutation({
     });
   },
 });
+
+export const deleteAnswer = mutation({
+  args: {
+    answerId: v.id("Answers"),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.delete(args.answerId);
+  },
+});

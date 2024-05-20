@@ -7,9 +7,10 @@ export default defineSchema({
   Rooms: defineTable({
     createId: v.string(), // id создания комнаты
     authorID: v.string(), // id того, кто создал комнату
+    // isCreated: v.boolean(),
     isStart: v.boolean(), // началась ли конференция
     icebergQuestionContent: v.string(), // конент Iceberg вопроса
-    countDown: v.number(),
+    time: v.number(),
   }).index("by_create", ["createId"]), // поиск таблицы по id создания
 
   // Схема таблицы пользователей в базе данных
@@ -25,6 +26,7 @@ export default defineSchema({
     roomId: v.id("Rooms"), // id комнаты, в которой находится игрок
     role: v.string(), // роль игрока
     isReady: v.boolean(), // приготовился ли игрок
+    isAnswered: v.boolean(),
   })
     .index("by_room", ["roomId"]) // поиск игрока по id комнаты
     .index("by_playerId", ["playerId"]), // поиск игрока по id игрока

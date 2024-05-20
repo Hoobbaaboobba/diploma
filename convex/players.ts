@@ -9,6 +9,7 @@ export const create = mutation({
     roomId: v.id("Rooms"), // id комнаты, в которой находится игрок
     role: v.string(), // роль игрока
     isReady: v.boolean(), // приготовился ли игрок
+    isAnswered: v.boolean(),
   },
   handler: async (ctx, args) => {
     // прокидываем эти аргументы
@@ -18,6 +19,7 @@ export const create = mutation({
       roomId: args.roomId,
       role: args.role,
       isReady: args.isReady,
+      isAnswered: args.isAnswered,
     });
   },
 });
@@ -61,6 +63,18 @@ export const updateReady = mutation({
   handler: async (ctx, args) => {
     await ctx.db.patch(args.playerId, {
       isReady: args.isReady,
+    });
+  },
+});
+
+export const updateAnswered = mutation({
+  args: {
+    playerId: v.id("Players"),
+    isAnswered: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.playerId, {
+      isAnswered: args.isAnswered,
     });
   },
 });

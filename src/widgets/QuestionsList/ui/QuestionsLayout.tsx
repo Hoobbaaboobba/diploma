@@ -14,13 +14,14 @@ import { Input } from "@/shared/ui/input";
 import { QuestionsList } from "@/widgets/QuestionsList";
 import { api } from "../../../../convex/_generated/api";
 import { useQuery } from "convex/react";
-import { Loader2 } from "lucide-react";
+import { ChevronRight, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { Id } from "../../../../convex/_generated/dataModel";
 import IcebergQuestion from "./IcebergQuestion";
 import { Separator } from "@/shared/ui/separator";
+import SetTime from "./SetTime";
 
 interface QuestionsLayout {
   params: {
@@ -63,6 +64,10 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
     api.players.create
   );
 
+  // const { mutate: updateCreate, pending: pendingCreate } = useApiMutation(
+  //   api.rooms.updateCreate
+  // );
+
   // Пока страница создания комнаты загружается, рисуем красивый UI
   if (!getRoom) {
     return (
@@ -89,6 +94,10 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
 
   // Создаем функцию, которая вызывается при нажатии кнопки "Start"
   function onStart() {
+    // updateCreate({
+    //   roomId: roomId as Id<"Rooms">,
+    //   isCreated: true
+    // })
     //Вызываем функцию создания игрока, которую вытащили из useApiMutation выше
     createPlayer({
       name: session.user.name, // Из сессии в cookie берем имя пользователя
@@ -96,6 +105,7 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
       roomId: roomId, // Из переменной выше берем id комнаты
       role: "Admin", // Тот, кто создал комнату, получает роль админа
       isReady: false, // По умолчанию игрок не готов
+      isAnswered: false,
     }).then(() => router.push(`/waitingrooms/${roomId}`)); // После чего перкидываем пользователя в саму комнату
   }
 
@@ -108,14 +118,20 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
           .map((e) => e.icebergQuestionContent)
           .toString()}
       />
+      <SetTime createId={params.createId} />
       <Separator className="w-full h-[2px] my-10" />
       <QuestionsList roomId={roomId} />
       <Button
-        className="mt-6 w-[100px]"
+        className="mt-6"
         disabled={getQuestions?.length === 0 || pendingCreatePlayer}
         onClick={onStart}
       >
-        {pendingCreatePlayer ? <Loader2 className="animate-spin" /> : "Start"}
+        Room
+        {pendingCreatePlayer ? (
+          <Loader2 className="animate-spin w-4 h-4" />
+        ) : (
+          <ChevronRight strokeWidth={1.5} className="ml-2 w-5 h-5" />
+        )}
       </Button>
     </div>
   );

@@ -23,7 +23,7 @@ export default async function RoomPage({ params }: RoomPageProps) {
 
   return (
     <div className="w-full h-full flex justify-center items-center">
-      <Timer params={params} />
+      <Timer params={params} session={sessionData} />
       <RoomQuestions params={params} session={sessionData} />
     </div>
   );
