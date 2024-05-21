@@ -53,11 +53,11 @@ export default function ResultQuestion({
     api.likedpeople.update
   );
 
-  // const loader =
-  //   createPending ||
-  //   likePending ||
-  //   updateAnswerLikesPending ||
-  //   updatePlayerLikesPending;
+  const loader =
+    createPending ||
+    likePending ||
+    updateAnswerLikesPending ||
+    updatePlayerLikesPending;
 
   if (!getLikedPeople || !getCurrentPlayer) {
     return null;
@@ -156,7 +156,7 @@ export default function ResultQuestion({
                 <div className="flex gap-1 justify-center items-center">
                   <button
                     title="Like"
-                    disabled={updateAnswerLikesPending}
+                    disabled={loader}
                     onClick={() => onSave(answer._id)}
                   >
                     <Heart
