@@ -13,6 +13,7 @@ interface StartButtonProps {
     roomId: string;
   };
   userId: string;
+  role: string;
   getPlayers:
     | {
         _id: Id<"Players">;
@@ -30,6 +31,7 @@ export default function StartButton({
   params,
   getPlayers,
   userId,
+  role,
 }: StartButtonProps) {
   const isEverybodyReady =
     getPlayers?.length === getPlayers?.filter((e) => e.isReady === true).length;
@@ -50,8 +52,10 @@ export default function StartButton({
     });
   }
   return (
-    <Button onClick={onClick} disabled={!isEverybodyReady}>
-      {pending ? <Loader2 className="animate-spin" /> : "Start"}
-    </Button>
+    role === "Admin" && (
+      <Button onClick={onClick} disabled={!isEverybodyReady}>
+        {pending ? <Loader2 className="animate-spin" /> : "Start"}
+      </Button>
+    )
   );
 }

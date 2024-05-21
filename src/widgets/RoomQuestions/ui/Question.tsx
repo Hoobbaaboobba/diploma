@@ -16,6 +16,7 @@ import { Id } from "../../../../convex/_generated/dataModel";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 import { Check, Loader, Loader2, Plus, PlusCircle, Trash } from "lucide-react";
 import { useQuery } from "convex/react";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 interface QuestionProps {
   QuestionId: Id<"Questions">;
@@ -23,6 +24,7 @@ interface QuestionProps {
   index: number;
   userId: string;
   roomId: string;
+  playerName: string;
 }
 
 export default function Question({
@@ -31,6 +33,7 @@ export default function Question({
   index,
   userId,
   roomId,
+  playerName,
 }: QuestionProps) {
   const [isLoader, setIsLoader] = useState(false);
 
@@ -60,6 +63,7 @@ export default function Question({
   function MakeAnswer() {
     mutate({
       userId: userId,
+      playerName: playerName,
       questionId: QuestionId,
       content: "",
       roomId: roomId,

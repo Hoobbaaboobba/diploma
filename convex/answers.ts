@@ -4,6 +4,7 @@ import { mutation, query } from "./_generated/server";
 export const create = mutation({
   args: {
     userId: v.string(),
+    playerName: v.string(),
     questionId: v.id("Questions"),
     content: v.string(),
     roomId: v.id("Rooms"),
@@ -11,9 +12,11 @@ export const create = mutation({
   handler: async (ctx, args) => {
     await ctx.db.insert("Answers", {
       userId: args.userId,
+      playerName: args.playerName,
       questionId: args.questionId,
       content: args.content,
       roomId: args.roomId,
+      likesAmount: 0,
     });
   },
 });
@@ -54,6 +57,24 @@ export const update = mutation({
   handler: async (ctx, args) => {
     await ctx.db.patch(args.answerId, {
       content: args.content,
+    });
+  },
+});
+
+export const updateLikes = mutation({
+  args: {
+    answerId: v.id("Answers"),
+    likes: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    const likes = await ctx.db.get(args.answerId);
+    if (args.likes) {
+      return await ctx.db.patch(args.answerId, {
+        likesAmount: (likes?.likesAmount as number) + 1,
+      });
+    }
+    return await ctx.db.patch(args.answerId, {
+      likesAmount: (likes?.likesAmount as number) - 1,
     });
   },
 });

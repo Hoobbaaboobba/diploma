@@ -13,6 +13,7 @@ import { api } from "../../../../convex/_generated/api";
 import { useQuery } from "convex/react";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { useState } from "react";
+import { Check } from "lucide-react";
 
 interface SetTimeProps {
   createId: string;
@@ -45,12 +46,18 @@ export default function SetTime({ createId }: SetTimeProps) {
       <CardHeader>
         <CardTitle>Set time (s)</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="relative">
         <Input
           defaultValue={getRoom?.map((e) => e.time).toString()}
           onBlur={onSetTime}
           onChange={(e) => setTimeValue(e.target.value)}
+          className={`${timeValue.length > 0 && "border-emerald-400"}`}
         />
+        {timeValue.length > 0 && (
+          <div className="absolute text-sm flex justify-center items-center top-3 right-8">
+            <Check className="w-4 h-4 text-green-600" />
+          </div>
+        )}
       </CardContent>
       <CardFooter></CardFooter>
     </Card>

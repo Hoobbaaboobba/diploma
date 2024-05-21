@@ -103,6 +103,7 @@ export default function PlayersList({ params, session }: PlayersListProps) {
         params={params}
         getPlayers={getPlayers}
         userId={session.user.id}
+        role={getCurrentUser?.map((e) => e.role).toString() as string}
       />
     </div>
   );

@@ -15,8 +15,10 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as answers from "../answers.js";
+import type * as likedpeople from "../likedpeople.js";
 import type * as players from "../players.js";
 import type * as questions from "../questions.js";
+import type * as replies from "../replies.js";
 import type * as rooms from "../rooms.js";
 import type * as users from "../users.js";
 
@@ -30,8 +32,10 @@ import type * as users from "../users.js";
  */
 declare const fullApi: ApiFromModules<{
   answers: typeof answers;
+  likedpeople: typeof likedpeople;
   players: typeof players;
   questions: typeof questions;
+  replies: typeof replies;
   rooms: typeof rooms;
   users: typeof users;
 }>;

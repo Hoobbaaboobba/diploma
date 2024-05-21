@@ -34,7 +34,7 @@ interface LoginFormByLinkProps {
 
 export default function LoginFormByLink({ params }: LoginFormByLinkProps) {
   const [isPending, setTransition] = useTransition();
-  const { mutate, pending } = useApiMutation(api.users.createUser);
+  const { mutate: createUser } = useApiMutation(api.users.createUser);
 
   const { mutate: createPlayer } = useApiMutation(api.players.create);
 
@@ -50,7 +50,7 @@ export default function LoginFormByLink({ params }: LoginFormByLinkProps) {
     setTransition(async () => {
       await login(values);
     });
-    mutate({
+    createUser({
       userId: values.id,
       name: values.name,
     });

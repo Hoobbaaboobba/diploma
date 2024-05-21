@@ -27,6 +27,7 @@ export default defineSchema({
     role: v.string(), // роль игрока
     isReady: v.boolean(), // приготовился ли игрок
     isAnswered: v.boolean(),
+    likesAllowed: v.number(),
   })
     .index("by_room", ["roomId"]) // поиск игрока по id комнаты
     .index("by_playerId", ["playerId"]), // поиск игрока по id игрока
@@ -40,11 +41,26 @@ export default defineSchema({
   // Схема ответов на вопросы
   Answers: defineTable({
     userId: v.string(), // id пользователя, который ответил на вопрос
+    playerName: v.string(),
     questionId: v.id("Questions"), // id вопроса, на который был дан ответ
     content: v.string(), // содержание ответа
     roomId: v.id("Rooms"),
+    likesAmount: v.number(),
   })
     //.index("by_user", ["userId"]) // поиск ответа по id пользователя
     .index("by_question", ["questionId"]) // поиск ответа по id вопроса
     .index("by_room", ["roomId"]),
+
+  LikedPeople: defineTable({
+    userId: v.string(),
+    answerId: v.id("Answers"),
+    isLiked: v.boolean(),
+  }).index("by_userId", ["userId"]),
+
+  Replies: defineTable({
+    userName: v.string(),
+    userId: v.string(),
+    content: v.string(),
+    answerId: v.id("Answers"),
+  }).index("by_answerId", ["answerId"]),
 });

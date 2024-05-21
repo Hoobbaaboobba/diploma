@@ -1,5 +1,4 @@
 import QuestionsLayout from "@/widgets/QuestionsList/ui/QuestionsLayout";
-import { redirect } from "next/navigation";
 import { getSession } from "../../../../lib";
 
 interface CreateRoomPageProps {

@@ -20,6 +20,7 @@ export const create = mutation({
       role: args.role,
       isReady: args.isReady,
       isAnswered: args.isAnswered,
+      likesAllowed: 3,
     });
   },
 });
@@ -75,6 +76,24 @@ export const updateAnswered = mutation({
   handler: async (ctx, args) => {
     await ctx.db.patch(args.playerId, {
       isAnswered: args.isAnswered,
+    });
+  },
+});
+
+export const updateLikes = mutation({
+  args: {
+    playerId: v.id("Players"),
+    likes: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    const likes = await ctx.db.get(args.playerId);
+    if (args.likes) {
+      return await ctx.db.patch(args.playerId, {
+        likesAllowed: (likes?.likesAllowed as number) + 1,
+      });
+    }
+    return await ctx.db.patch(args.playerId, {
+      likesAllowed: (likes?.likesAllowed as number) - 1,
     });
   },
 });

@@ -49,6 +49,7 @@ export default function RoomQuestions({ params, session }: RoomQuestionsProps) {
           index={index}
           userId={session.user.id}
           roomId={params.roomId}
+          playerName={session.user.name}
         />
       ))}
       <Button onClick={onComplete}>

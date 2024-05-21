@@ -59,7 +59,9 @@ export default function Timer({ params, session }: RoomQuestionsProps) {
   ]);
 
   if (!getRoom?.time) {
-    return <Skeleton className="w-5 h-5 rounded-full" />;
+    return (
+      <Skeleton className="w-11 h-11 absolute top-5 left-5 rounded-full" />
+    );
   }
 
   return (
