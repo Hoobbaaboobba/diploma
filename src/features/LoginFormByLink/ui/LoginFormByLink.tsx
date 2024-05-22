@@ -14,7 +14,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shared/ui/form";
-import { useEffect, useTransition } from "react";
 import { loginSchema } from "../../../../schemas/loginSchema";
 import { login } from "../../../../lib";
 import { Loader2 } from "lucide-react";
@@ -33,10 +32,11 @@ interface LoginFormByLinkProps {
 }
 
 export default function LoginFormByLink({ params }: LoginFormByLinkProps) {
-  const [isPending, setTransition] = useTransition();
   const { mutate: createUser } = useApiMutation(api.users.createUser);
 
-  const { mutate: createPlayer } = useApiMutation(api.players.create);
+  const { mutate: createPlayer, pending: createPlayerPending } = useApiMutation(
+    api.players.create
+  );
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -46,22 +46,24 @@ export default function LoginFormByLink({ params }: LoginFormByLinkProps) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    setTransition(async () => {
-      await login(values);
-    });
-    createUser({
-      userId: values.id,
-      name: values.name,
-    });
-    createPlayer({
-      name: values.name,
-      playerId: values.id,
-      roomId: params.roomId,
-      role: "quest",
-      isReady: false,
-      isAnswered: false,
-    });
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    return await login(values)
+      .then(() =>
+        createUser({
+          userId: values.id,
+          name: values.name,
+        })
+      )
+      .then(() =>
+        createPlayer({
+          name: values.name,
+          playerId: values.id,
+          roomId: params.roomId,
+          role: "quest",
+          isReady: false,
+          isAnswered: false,
+        })
+      );
   }
 
   return (
@@ -84,7 +86,11 @@ export default function LoginFormByLink({ params }: LoginFormByLinkProps) {
                 )}
               />
               <Button type="submit" className="w-full">
-                {isPending ? <Loader2 className="animate-spin" /> : "Enter"}
+                {createPlayerPending ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  "Enter"
+                )}
               </Button>
             </form>
           </Form>

@@ -38,14 +38,13 @@ export default function LoginForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    setTransition(async () => {
-      await login(values);
-    });
-    return mutate({
-      userId: values.id,
-      name: values.name,
-    });
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    return await login(values).then(() =>
+      mutate({
+        userId: values.id,
+        name: values.name,
+      })
+    );
   }
 
   return (
@@ -68,7 +67,7 @@ export default function LoginForm() {
                 )}
               />
               <Button type="submit" className="w-full">
-                {isPending ? <Loader2 className="animate-spin" /> : "Enter"}
+                {pending ? <Loader2 className="animate-spin" /> : "Enter"}
               </Button>
             </form>
           </Form>

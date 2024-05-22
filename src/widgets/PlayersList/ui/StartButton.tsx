@@ -33,16 +33,17 @@ export default function StartButton({
   userId,
   role,
 }: StartButtonProps) {
-  const isEverybodyReady =
-    getPlayers?.length === getPlayers?.filter((e) => e.isReady === true).length;
-
-  const { mutate: createAnswers } = useApiMutation(api.answers.create);
-
   /* 
   Этот хук начинает игру, делает isStart === true в бд
   Мы также вытаскиваем функцию и состояние загрузки
   */
   const { mutate, pending: pending } = useApiMutation(api.rooms.updateStart);
+
+  if (!getPlayers) {
+    return null;
+  }
+  const isEverybodyReady =
+    getPlayers.length === getPlayers.filter((e) => e.isReady === true).length;
 
   function onClick() {
     //Вызываем функцию начала игры, которую вытащили из useApiMutation выше

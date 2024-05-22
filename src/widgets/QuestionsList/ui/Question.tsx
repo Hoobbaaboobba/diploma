@@ -23,15 +23,12 @@ interface QuestionProps {
 
 export default function Question({ id, content, index }: QuestionProps) {
   const [questionValue, setQuestionValue] = useState("");
-  const [isSaved, setIsSaved] = useState(false);
 
   const { mutate: deleteQ, pending: pendingDeleteQ } = useApiMutation(
     api.questions.deleteQ
   );
 
-  const { mutate: updateQ, pending: pendingUpdateQ } = useApiMutation(
-    api.questions.update
-  );
+  const { mutate: updateQ } = useApiMutation(api.questions.update);
 
   function onDelete(questionId: Id<"Questions">) {
     return deleteQ({
@@ -40,7 +37,6 @@ export default function Question({ id, content, index }: QuestionProps) {
   }
 
   function onSave(questionId: Id<"Questions">) {
-    setIsSaved(true);
     return updateQ({
       questionId: questionId,
       content: questionValue,

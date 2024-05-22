@@ -33,35 +33,13 @@ export default function PlayersList({ params, session }: PlayersListProps) {
     roomId: params.roomId as Id<"Rooms">,
   });
 
-  const { mutate, pending } = useApiMutation(api.players.updateReady);
-
   const getQuestions = useQuery(api.questions.get, {
     roomId: params.roomId as Id<"Rooms">,
   });
 
-  if (getRoom?.isStart && getQuestions) {
-    return redirect(`/rooms/${params.roomId}`);
-  }
+  const { mutate, pending } = useApiMutation(api.players.updateReady);
 
-  if (getPlayers?.filter((e) => e.playerId === session.user.id).length === 0) {
-    return <LoginFormByLink params={params} />;
-  }
-
-  function onReady() {
-    return mutate({
-      playerId: getCurrentUser?.map((e) => e._id).toString() as Id<"Players">,
-      isReady: true,
-    });
-  }
-
-  function onUnReady() {
-    return mutate({
-      playerId: getCurrentUser?.map((e) => e._id).toString() as Id<"Players">,
-      isReady: false,
-    });
-  }
-
-  if (!getPlayers) {
+  if (!getQuestions || !getRoom || !getCurrentUser || !getPlayers) {
     return (
       <div className="container space-y-1 mt-10">
         <Skeleton className="w-full h-10" />
@@ -71,6 +49,34 @@ export default function PlayersList({ params, session }: PlayersListProps) {
         <Skeleton className="w-full h-10" />
       </div>
     );
+  }
+
+  if (getRoom.isStart && getQuestions) {
+    return redirect(`/rooms/${params.roomId}`);
+  }
+
+  if (getPlayers.filter((e) => e.playerId === session.user.id).length === 0) {
+    return <LoginFormByLink params={params} />;
+  }
+
+  function onReady() {
+    if (!getCurrentUser) {
+      return null;
+    }
+    return mutate({
+      playerId: getCurrentUser.map((e) => e._id).toString() as Id<"Players">,
+      isReady: true,
+    });
+  }
+
+  function onUnReady() {
+    if (!getCurrentUser) {
+      return null;
+    }
+    return mutate({
+      playerId: getCurrentUser.map((e) => e._id).toString() as Id<"Players">,
+      isReady: false,
+    });
   }
 
   return (

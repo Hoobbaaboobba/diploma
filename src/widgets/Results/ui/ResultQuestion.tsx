@@ -15,6 +15,7 @@ import { Heart } from "lucide-react";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 import ReplyPopover from "./ReplyPopover";
 import ReplyList from "./ReplyList";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 interface ResultQuestionProps {
   index: number;
@@ -64,13 +65,25 @@ export default function ResultQuestion({
   }
 
   const userRole = getCurrentPlayer.map((e) => e.role).toString();
+  const answerLoading = getAnswers && (
+    <>
+      <Skeleton className="w-full h-6" />
+      <Skeleton className="w-full h-6" />
+    </>
+  );
 
   function onSave(answerId: Id<"Answers">) {
-    const likes = getLikedPeople?.filter(
+    if (!getLikedPeople || !getCurrentPlayer) {
+      return null;
+    }
+    const likes = getLikedPeople.filter(
       (e) => e.answerId === answerId && e.userId === userId
     );
 
-    if (likes?.length === 0) {
+    if (
+      likes.length === 0 &&
+      getCurrentPlayer.map((e) => e.likesAllowed).toString() !== "0"
+    ) {
       return create({
         userId: userId,
         answerId: answerId,
@@ -84,7 +97,7 @@ export default function ResultQuestion({
         .then(() =>
           updatePlayerLikes({
             playerId: getCurrentPlayer
-              ?.map((e) => e._id)
+              .map((e) => e._id)
               .toString() as Id<"Players">,
             likes: false,
           })
@@ -93,16 +106,13 @@ export default function ResultQuestion({
 
     if (likes?.map((e) => e.isLiked).toString() === "true") {
       return like({
-        likedPeopleId: getLikedPeople
-          ?.filter((e) => e.userId === userId && e.answerId === answerId)
-          .map((e) => e._id)
-          .toString() as Id<"LikedPeople">,
+        likedPeopleId: likes.map((e) => e._id).toString() as Id<"LikedPeople">,
         isLiked: false,
       })
         .then(() =>
           updatePlayerLikes({
             playerId: getCurrentPlayer
-              ?.map((e) => e._id)
+              .map((e) => e._id)
               .toString() as Id<"Players">,
             likes: true,
           })
@@ -115,24 +125,25 @@ export default function ResultQuestion({
         );
     }
 
-    if (getCurrentPlayer?.map((e) => e.likesAllowed).toString() !== "0") {
-      like({
-        likedPeopleId: getLikedPeople
-          ?.filter((e) => e.userId === userId && e.answerId === answerId)
-          .map((e) => e._id)
-          .toString() as Id<"LikedPeople">,
+    if (getCurrentPlayer.map((e) => e.likesAllowed).toString() !== "0") {
+      return like({
+        likedPeopleId: likes.map((e) => e._id).toString() as Id<"LikedPeople">,
         isLiked: true,
-      });
-      updateAnswerLikes({
-        answerId: answerId,
-        likes: true,
-      });
-      updatePlayerLikes({
-        playerId: getCurrentPlayer
-          ?.map((e) => e._id)
-          .toString() as Id<"Players">,
-        likes: false,
-      });
+      })
+        .then(() =>
+          updateAnswerLikes({
+            answerId: answerId,
+            likes: true,
+          })
+        )
+        .then(() =>
+          updatePlayerLikes({
+            playerId: getCurrentPlayer
+              .map((e) => e._id)
+              .toString() as Id<"Players">,
+            likes: false,
+          })
+        );
     }
   }
   return (
@@ -143,41 +154,43 @@ export default function ResultQuestion({
       </CardHeader>
       <CardContent className="space-y-3">
         {getAnswers
-          ?.filter((e) => e.questionId === questionId)
-          .map((answer) => (
-            <div
-              key={answer._id}
-              className="w-full flex flex-col justify-center items-end"
-            >
-              <div className="w-full flex justify-between items-center">
-                <span>
-                  {answer.playerName}: {answer.content}
-                </span>
-                <div className="flex gap-1 justify-center items-center">
-                  <button
-                    title="Like"
-                    disabled={loader}
-                    onClick={() => onSave(answer._id)}
-                  >
-                    <Heart
-                      className={`${getLikedPeople?.filter((e) => e.answerId === answer._id && e.isLiked === true && e.userId === userId).length && "fill-rose-500 text-rose-500"} h-5 w-5`}
-                    />
-                  </button>
-                  <span className="font-semibold w-3">
-                    {answer.likesAmount}
-                  </span>
-                  {userRole === "Admin" && (
-                    <ReplyPopover
-                      userName={userName}
-                      userId={userId}
-                      answerId={answer._id}
-                    />
-                  )}
+          ? getAnswers
+              .filter((e) => e.questionId === questionId)
+              .map((answer) => (
+                <div
+                  key={answer._id}
+                  className="w-full flex flex-col justify-center items-end"
+                >
+                  <div className="w-full flex justify-between items-center">
+                    <span>
+                      {answer.playerName}: {answer.content}
+                    </span>
+                    <div className="flex gap-1 justify-center items-center">
+                      <button
+                        title="Like"
+                        disabled={loader}
+                        onClick={() => onSave(answer._id)}
+                      >
+                        <Heart
+                          className={`${getLikedPeople?.filter((e) => e.answerId === answer._id && e.isLiked === true && e.userId === userId).length && "fill-rose-500 text-rose-500"} h-5 w-5`}
+                        />
+                      </button>
+                      <span className="font-semibold w-3">
+                        {answer.likesAmount}
+                      </span>
+                      {userRole === "Admin" && (
+                        <ReplyPopover
+                          userName={userName}
+                          userId={userId}
+                          answerId={answer._id}
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <ReplyList answerId={answer._id} userRole={userRole} />
                 </div>
-              </div>
-              <ReplyList answerId={answer._id} userRole={userRole} />
-            </div>
-          ))}
+              ))
+          : answerLoading}
       </CardContent>
       <CardFooter></CardFooter>
     </Card>

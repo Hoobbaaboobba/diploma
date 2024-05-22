@@ -22,13 +22,11 @@ export default function CreateRoom({ session }: CreateRoomProps) {
 
   const createId = uuidv4();
 
-  const onClick = () => {
-    mutate({
+  const onClick = async () => {
+    return await mutate({
       authorID: session.user.id,
       createId: createId,
-    });
-
-    router.push(`/create/${createId}`);
+    }).then(() => router.push(`/create/${createId}`));
   };
   return (
     <Button onClick={onClick} className="w-[200px] mt-[400px]">

@@ -9,6 +9,7 @@ import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 import Question from "./Question";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { Id } from "../../../../convex/_generated/dataModel";
+import LoaderAnimation from "@/shared/ui/LoaderAnimation";
 
 interface QuestionsListProps {
   roomId: string | undefined;
@@ -28,12 +29,7 @@ export default function QuestionsList({ roomId }: QuestionsListProps) {
   }
 
   if (!getQuestions) {
-    return (
-      <div className="w-full container p-0 flex flex-col gap-10 justify-center items-center mt-10">
-        <Skeleton className="w-full h-[202px]" />
-        <Skeleton className="w-full h-[202px]" />
-      </div>
-    );
+    return <LoaderAnimation />;
   }
 
   return (
@@ -52,7 +48,7 @@ export default function QuestionsList({ roomId }: QuestionsListProps) {
       ))}
       <div className="flex justify-center items-center">
         <Button onClick={onPlus} variant="outline" className="w-[150px]">
-          Make question
+          Add question
           {pending ? (
             <Loader2 className="animate-spin ml-1" />
           ) : (

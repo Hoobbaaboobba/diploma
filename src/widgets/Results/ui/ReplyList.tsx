@@ -3,7 +3,7 @@
 import { useQuery } from "convex/react";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { api } from "../../../../convex/_generated/api";
-import { Loader2, Plus, Reply } from "lucide-react";
+import { Plus, Reply } from "lucide-react";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 
 interface ReplyListProps {
@@ -19,7 +19,7 @@ export default function ReplyList({ answerId, userRole }: ReplyListProps) {
   const { mutate, pending } = useApiMutation(api.replies.deleteReply);
 
   if (!getReplies) {
-    return <Loader2 className="animate-spin" />;
+    return null;
   }
 
   function onDelete(replyId: Id<"Replies">) {
@@ -28,7 +28,7 @@ export default function ReplyList({ answerId, userRole }: ReplyListProps) {
     });
   }
 
-  return getReplies?.map((reply) => (
+  return getReplies.map((reply) => (
     <div key={reply._id} className="flex gap-1 justify-center items-center">
       {reply.userName}: {reply.content} <Reply />{" "}
       {userRole === "Admin" && (

@@ -49,6 +49,10 @@ export default function Question({
     questionId: QuestionId,
   });
 
+  const answersLoading = !getAnswers && (
+    <Skeleton className="w-full px-4 h-9" />
+  );
+
   function onSave(e: ChangeEvent<HTMLInputElement>, answerId: Id<"Answers">) {
     updateAnswer({
       answerId: answerId,
@@ -87,24 +91,26 @@ export default function Question({
       </CardHeader>
       <CardContent className="space-y-4">
         {getAnswers
-          ?.filter((e) => e.userId === userId)
-          .map((answer) => (
-            <div key={answer._id} className="flex gap-2">
-              <Input
-                disabled={deleteAnswerPending}
-                defaultValue={answer.content}
-                onChange={(e) => onSave(e, answer._id)}
-              />
-              <Button
-                disabled={deleteAnswerPending}
-                onClick={() => onDelete(answer._id)}
-                variant="destructive"
-                size="icon"
-              >
-                <Trash />
-              </Button>
-            </div>
-          ))}
+          ? getAnswers
+              ?.filter((e) => e.userId === userId)
+              .map((answer) => (
+                <div key={answer._id} className="flex gap-2">
+                  <Input
+                    disabled={deleteAnswerPending}
+                    defaultValue={answer.content}
+                    onChange={(e) => onSave(e, answer._id)}
+                  />
+                  <Button
+                    disabled={deleteAnswerPending}
+                    onClick={() => onDelete(answer._id)}
+                    variant="destructive"
+                    size="icon"
+                  >
+                    <Trash />
+                  </Button>
+                </div>
+              ))
+          : answersLoading}
         <Button onClick={MakeAnswer}>
           Add answer
           {pending ? (

@@ -2,6 +2,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import ResultQuestion from "./ResultQuestion";
+import LoaderAnimation from "@/shared/ui/LoaderAnimation";
 
 interface ResultsListProps {
   roomId: string;
@@ -17,7 +18,11 @@ export default function ResultsList({
   const getQuestions = useQuery(api.questions.get, {
     roomId: roomId as Id<"Rooms">,
   });
-  return getQuestions?.map((question, index) => (
+
+  if (!getQuestions) {
+    return <LoaderAnimation />;
+  }
+  return getQuestions.map((question, index) => (
     <div key={question._id}>
       <ResultQuestion
         index={index}

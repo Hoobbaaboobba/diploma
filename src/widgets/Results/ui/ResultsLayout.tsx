@@ -5,6 +5,7 @@ import { Check, Clock, Loader2 } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import ResultsList from "@/widgets/Results/ui/ResultsList";
+import LoaderAnimation from "@/shared/ui/LoaderAnimation";
 
 interface ResultsLayoutProps {
   roomId: string;
@@ -16,18 +17,18 @@ export default function ResultsLayout({ roomId, session }: ResultsLayoutProps) {
     roomId: roomId as Id<"Rooms">,
   });
 
-  const isEveryBodyAnswerd =
-    getPlayers?.length ===
-    getPlayers?.filter((e) => e.isAnswered === true).length;
-
   if (!getPlayers) {
-    return <Loader2 className="animate-spin" />;
+    return <LoaderAnimation />;
   }
+
+  const isEveryBodyAnswerd =
+    getPlayers.length ===
+    getPlayers.filter((e) => e.isAnswered === true).length;
 
   if (!isEveryBodyAnswerd) {
     return (
       <div className="container flex flex-col gap-2 justify-center items-center mt-10">
-        {getPlayers?.map((player) => (
+        {getPlayers.map((player) => (
           <div
             key={player._id}
             className="flex flex-col justify-center container items-center gap-2"
