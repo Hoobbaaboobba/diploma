@@ -22,6 +22,7 @@ export default function ResultsList({
   if (!getQuestions) {
     return <LoaderAnimation />;
   }
+
   return getQuestions.map((question, index) => (
     <div key={question._id}>
       <ResultQuestion

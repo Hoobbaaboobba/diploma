@@ -1,7 +1,4 @@
-import { useQuery } from "convex/react";
-import { Check, Clock, Loader2 } from "lucide-react";
-import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { redirect } from "next/navigation";
 import { getSession } from "../../../../lib";
 import ResultsLayout from "@/widgets/Results/ui/ResultsLayout";
 
@@ -13,6 +10,10 @@ interface ResultsPageProps {
 
 export default async function ResultsPage({ params }: ResultsPageProps) {
   const session = await getSession();
+
+  if (!session) {
+    return redirect(`/`);
+  }
 
   const jsonData = JSON.stringify(session, null, 2);
 

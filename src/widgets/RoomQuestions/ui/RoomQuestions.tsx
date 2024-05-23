@@ -32,12 +32,11 @@ export default function RoomQuestions({ params, session }: RoomQuestionsProps) {
     playerId: session.user.id,
   });
 
-  if (getCurrentUser?.map((e) => e.isAnswered).toString() === "true") {
-    return redirect(`/results/${params.roomId}`);
-  }
-
   if (!getCurrentUser) {
     return null;
+  }
+  if (getCurrentUser.map((e) => e.isAnswered).toString() === "true") {
+    return redirect(`/results/${params.roomId}`);
   }
 
   if (!getQuestions) {
@@ -45,15 +44,12 @@ export default function RoomQuestions({ params, session }: RoomQuestionsProps) {
   }
 
   function onComplete() {
-    if (!getCurrentUser) {
-      return null;
-    }
-    return updateIsAnswered({
-      playerId: getCurrentUser.map((e) => e._id).toString() as Id<"Players">,
+    updateIsAnswered({
+      playerId: getCurrentUser?.map((e) => e._id).toString() as Id<"Players">,
       isAnswered: true,
-    }).then(() => router.push(`/results/${params.roomId}`));
+    });
+    return redirect(`/results/${params.roomId}`);
   }
-
   return (
     <div className="flex flex-col gap-8 container justify-center items-end mt-10">
       {getQuestions.map((question, index) => (

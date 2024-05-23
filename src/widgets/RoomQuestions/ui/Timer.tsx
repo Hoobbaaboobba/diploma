@@ -34,21 +34,21 @@ export default function Timer({ params, session }: RoomQuestionsProps) {
   });
 
   useEffect(() => {
-    if (!getRoom || !getCurrentUser) {
-      return;
-    }
-    if (getRoom.time > 0) {
+    // if (!getRoom || !getCurrentUser) {
+    //   return;
+    // }
+    if ((getRoom?.time as number) > 0) {
       let interval = null;
       interval = setInterval(() => {
         mutate({
           roomId: params.roomId as Id<"Rooms">,
-          time: getRoom.time - 1,
+          time: (getRoom?.time as number) - 1,
         });
       }, 1000);
       return () => clearInterval(interval);
-    } else if (getRoom.time === 0) {
+    } else if (getRoom?.time === 0) {
       updateIsAnswered({
-        playerId: getCurrentUser.map((e) => e._id).toString() as Id<"Players">,
+        playerId: getCurrentUser?.map((e) => e._id).toString() as Id<"Players">,
         isAnswered: true,
       }).then(() => router.push(`/results/${params.roomId}`));
     }
@@ -62,21 +62,21 @@ export default function Timer({ params, session }: RoomQuestionsProps) {
     updateIsAnswered,
   ]);
 
-  if (!getRoom || !getCurrentUser) {
-    return <LoaderAnimation />;
-  }
+  // if (!getRoom || !getCurrentUser) {
+  //   return <LoaderAnimation />;
+  // }
 
-  if (!getRoom.time) {
-    return (
-      <Skeleton className="w-11 h-11 absolute top-5 left-5 rounded-full" />
-    );
-  }
+  // if (!getRoom.time) {
+  //   return (
+  //     <Skeleton className="w-11 h-11 absolute top-5 left-5 rounded-full" />
+  //   );
+  // }
 
   return (
     <div
-      className={`${getRoom.time > 20 ? "text-emerald-400" : "text-rose-400 timer"} flex absolute left-5 top-5 justify-center items-center text-xl font-bold`}
+      className={`${(getRoom?.time as number) > 20 ? "text-emerald-400" : "text-rose-400 timer"} flex absolute left-5 top-5 justify-center items-center text-xl font-bold`}
     >
-      {getRoom.time}s
+      {getRoom?.time}s
     </div>
   );
 }

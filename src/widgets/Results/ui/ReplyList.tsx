@@ -28,7 +28,7 @@ export default function ReplyList({ answerId, userRole }: ReplyListProps) {
     });
   }
 
-  return getReplies.map((reply) => (
+  return getReplies?.map((reply) => (
     <div key={reply._id} className="flex gap-1 justify-center items-center">
       {reply.userName}: {reply.content} <Reply />{" "}
       {userRole === "Admin" && (
