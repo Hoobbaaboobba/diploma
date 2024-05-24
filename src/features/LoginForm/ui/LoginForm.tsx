@@ -11,10 +11,9 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/shared/ui/form";
-import { useEffect, useTransition } from "react";
+import { useTransition } from "react";
 import { loginSchema } from "../../../../schemas/loginSchema";
 import { login } from "../../../../lib";
 import { Loader2 } from "lucide-react";
@@ -27,7 +26,6 @@ import { api } from "../../../../convex/_generated/api";
 const userId = uuidv4();
 
 export default function LoginForm() {
-  const [isPending, setTransition] = useTransition();
   const { mutate, pending } = useApiMutation(api.users.createUser);
 
   const form = useForm<z.infer<typeof loginSchema>>({

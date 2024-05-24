@@ -14,7 +14,7 @@ import { ChangeEvent, useState } from "react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
-import { Check, Loader, Loader2, Plus, PlusCircle, Trash } from "lucide-react";
+import { Loader, Loader2, Plus, Trash } from "lucide-react";
 import { useQuery } from "convex/react";
 import { Skeleton } from "@/shared/ui/skeleton";
 
@@ -38,7 +38,7 @@ export default function Question({
   const [isLoader, setIsLoader] = useState(false);
 
   const { mutate, pending } = useApiMutation(api.answers.create);
-  const { mutate: updateAnswer, pending: updateAnswerPending } = useApiMutation(
+  const { mutate: updateAnswer } = useApiMutation(
     api.answers.update
   );
   const { mutate: deleteAnswer, pending: deleteAnswerPending } = useApiMutation(
@@ -92,24 +92,24 @@ export default function Question({
       <CardContent className="space-y-4">
         {getAnswers
           ? getAnswers
-              ?.filter((e) => e.userId === userId)
-              .map((answer) => (
-                <div key={answer._id} className="flex gap-2">
-                  <Input
-                    disabled={deleteAnswerPending}
-                    defaultValue={answer.content}
-                    onChange={(e) => onSave(e, answer._id)}
-                  />
-                  <Button
-                    disabled={deleteAnswerPending}
-                    onClick={() => onDelete(answer._id)}
-                    variant="destructive"
-                    size="icon"
-                  >
-                    <Trash />
-                  </Button>
-                </div>
-              ))
+            ?.filter((e) => e.userId === userId)
+            .map((answer) => (
+              <div key={answer._id} className="flex gap-2">
+                <Input
+                  disabled={deleteAnswerPending}
+                  defaultValue={answer.content}
+                  onChange={(e) => onSave(e, answer._id)}
+                />
+                <Button
+                  disabled={deleteAnswerPending}
+                  onClick={() => onDelete(answer._id)}
+                  variant="destructive"
+                  size="icon"
+                >
+                  <Trash />
+                </Button>
+              </div>
+            ))
           : answersLoading}
         <Button onClick={MakeAnswer}>
           Add answer

@@ -4,10 +4,9 @@ import { Button } from "@/shared/ui/button";
 
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { Loader2, Plus, PlusCircle, Trash } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 import Question from "./Question";
-import { Skeleton } from "@/shared/ui/skeleton";
 import { Id } from "../../../../convex/_generated/dataModel";
 import LoaderAnimation from "@/shared/ui/LoaderAnimation";
 

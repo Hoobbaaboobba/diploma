@@ -1,13 +1,11 @@
 "use client";
 
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { api } from "../../../../convex/_generated/api";
 import { useQuery } from "convex/react";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { useRouter } from "next/navigation";
-import { Skeleton } from "@/shared/ui/skeleton";
-import LoaderAnimation from "@/shared/ui/LoaderAnimation";
 
 interface RoomQuestionsProps {
   params: {
@@ -34,21 +32,21 @@ export default function Timer({ params, session }: RoomQuestionsProps) {
   });
 
   useEffect(() => {
-    // if (!getRoom || !getCurrentUser) {
-    //   return;
-    // }
-    if ((getRoom?.time as number) > 0) {
+    if (!getRoom || !getCurrentUser) {
+      return;
+    }
+    if (getRoom.time > 0) {
       let interval = null;
       interval = setInterval(() => {
         mutate({
           roomId: params.roomId as Id<"Rooms">,
-          time: (getRoom?.time as number) - 1,
+          time: (getRoom?.time) - 1,
         });
       }, 1000);
       return () => clearInterval(interval);
     } else if (getRoom?.time === 0) {
       updateIsAnswered({
-        playerId: getCurrentUser?.map((e) => e._id).toString() as Id<"Players">,
+        playerId: getCurrentUser[0]._id,
         isAnswered: true,
       }).then(() => router.push(`/results/${params.roomId}`));
     }

@@ -2,20 +2,10 @@
 
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 import { Button } from "@/shared/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/shared/ui/card";
-import { Input } from "@/shared/ui/input";
 import { QuestionsList } from "@/widgets/QuestionsList";
 import { api } from "../../../../convex/_generated/api";
 import { useQuery } from "convex/react";
 import { ChevronRight, Loader2 } from "lucide-react";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { Id } from "../../../../convex/_generated/dataModel";
@@ -81,7 +71,7 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
     router.push(`/waitingrooms/${roomId}`);
   }
 
-  if (getRoom.map((e) => e.isStart).toString() === "true") {
+  if (getRoom[0].isStart) {
     return (
       <div className="container mt-40 flex flex-col justify-center items-center">
         <p className="text-2xl font-bold">Conference is ongoing</p>

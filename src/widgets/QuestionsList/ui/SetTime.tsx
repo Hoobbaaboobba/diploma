@@ -52,7 +52,7 @@ export default function SetTime({ createId }: SetTimeProps) {
       </CardHeader>
       <CardContent className="relative">
         <Input
-          defaultValue={getRoom.map((e) => e.time).toString()}
+          defaultValue={getRoom[0].time}
           onBlur={onSetTime}
           onChange={(e) => setTimeValue(e.target.value)}
           className={`${timeValue.length > 0 && "border-emerald-400"}`}

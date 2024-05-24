@@ -18,8 +18,6 @@ interface RoomQuestionsProps {
 }
 
 export default function RoomQuestions({ params, session }: RoomQuestionsProps) {
-  const router = useRouter();
-
   const { mutate: updateIsAnswered, pending } = useApiMutation(
     api.players.updateAnswered
   );
@@ -35,7 +33,7 @@ export default function RoomQuestions({ params, session }: RoomQuestionsProps) {
   if (!getCurrentUser) {
     return null;
   }
-  if (getCurrentUser.map((e) => e.isAnswered).toString() === "true") {
+  if (getCurrentUser[0].isAnswered) {
     return redirect(`/results/${params.roomId}`);
   }
 
@@ -44,8 +42,11 @@ export default function RoomQuestions({ params, session }: RoomQuestionsProps) {
   }
 
   function onComplete() {
+    if (!getCurrentUser) {
+      return null
+    }
     updateIsAnswered({
-      playerId: getCurrentUser?.map((e) => e._id).toString() as Id<"Players">,
+      playerId: getCurrentUser[0]._id,
       isAnswered: true,
     });
     return redirect(`/results/${params.roomId}`);

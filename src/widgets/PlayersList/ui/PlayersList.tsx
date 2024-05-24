@@ -64,7 +64,7 @@ export default function PlayersList({ params, session }: PlayersListProps) {
       return null;
     }
     return mutate({
-      playerId: getCurrentUser.map((e) => e._id).toString() as Id<"Players">,
+      playerId: getCurrentUser[0]._id,
       isReady: true,
     });
   }
@@ -74,7 +74,7 @@ export default function PlayersList({ params, session }: PlayersListProps) {
       return null;
     }
     return mutate({
-      playerId: getCurrentUser.map((e) => e._id).toString() as Id<"Players">,
+      playerId: getCurrentUser[0]._id,
       isReady: false,
     });
   }
@@ -96,7 +96,7 @@ export default function PlayersList({ params, session }: PlayersListProps) {
           </div>
         ))}
       </div>
-      {getCurrentUser?.map((e) => e.isReady).toString() === "true" ? (
+      {getCurrentUser[0].isReady === true ? (
         <Button onClick={onUnReady} className="w-[100px]">
           {pending ? <Loader2 className="animate-spin" /> : "UnReady"}
         </Button>
@@ -109,7 +109,7 @@ export default function PlayersList({ params, session }: PlayersListProps) {
         params={params}
         getPlayers={getPlayers}
         userId={session.user.id}
-        role={getCurrentUser?.map((e) => e.role).toString() as string}
+        role={getCurrentUser[0].role}
       />
     </div>
   );

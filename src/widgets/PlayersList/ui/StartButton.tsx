@@ -2,11 +2,9 @@
 
 import { Button } from "@/shared/ui/button";
 import { Id } from "../../../../convex/_generated/dataModel";
-import { useRouter } from "next/navigation";
 import { api } from "../../../../convex/_generated/api";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 import { Loader2 } from "lucide-react";
-import { useQuery } from "convex/react";
 
 interface StartButtonProps {
   params: {
@@ -15,22 +13,21 @@ interface StartButtonProps {
   userId: string;
   role: string;
   getPlayers:
-    | {
-        _id: Id<"Players">;
-        _creationTime: number;
-        name: string;
-        playerId: string;
-        roomId: Id<"Rooms">;
-        role: string;
-        isReady: boolean;
-      }[]
-    | undefined;
+  | {
+    _id: Id<"Players">;
+    _creationTime: number;
+    name: string;
+    playerId: string;
+    roomId: Id<"Rooms">;
+    role: string;
+    isReady: boolean;
+  }[]
+  | undefined;
 }
 
 export default function StartButton({
   params,
   getPlayers,
-  userId,
   role,
 }: StartButtonProps) {
   /* 

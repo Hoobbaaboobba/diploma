@@ -11,7 +11,7 @@ import {
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
-import { Heart } from "lucide-react";
+import { Currency, Heart } from "lucide-react";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 import ReplyPopover from "./ReplyPopover";
 import ReplyList from "./ReplyList";
@@ -64,7 +64,6 @@ export default function ResultQuestion({
     return null;
   }
 
-  const userRole = getCurrentPlayer.map((e) => e.role).toString();
   const answerLoading = getAnswers && (
     <>
       <Skeleton className="w-full h-6" />
@@ -82,7 +81,7 @@ export default function ResultQuestion({
 
     if (
       likes.length === 0 &&
-      getCurrentPlayer.map((e) => e.likesAllowed).toString() !== "0"
+      getCurrentPlayer[0].likesAllowed !== 0
     ) {
       return create({
         userId: userId,
@@ -96,24 +95,20 @@ export default function ResultQuestion({
         )
         .then(() =>
           updatePlayerLikes({
-            playerId: getCurrentPlayer
-              .map((e) => e._id)
-              .toString() as Id<"Players">,
+            playerId: getCurrentPlayer[0]._id,
             likes: false,
           })
         );
     }
 
-    if (likes?.map((e) => e.isLiked).toString() === "true") {
+    if (likes[0].isLiked) {
       return like({
-        likedPeopleId: likes.map((e) => e._id).toString() as Id<"LikedPeople">,
+        likedPeopleId: likes[0]._id,
         isLiked: false,
       })
         .then(() =>
           updatePlayerLikes({
-            playerId: getCurrentPlayer
-              .map((e) => e._id)
-              .toString() as Id<"Players">,
+            playerId: getCurrentPlayer[0]._id,
             likes: true,
           })
         )
@@ -125,9 +120,9 @@ export default function ResultQuestion({
         );
     }
 
-    if (getCurrentPlayer.map((e) => e.likesAllowed).toString() !== "0") {
+    if (getCurrentPlayer[0].likesAllowed !== 0) {
       return like({
-        likedPeopleId: likes.map((e) => e._id).toString() as Id<"LikedPeople">,
+        likedPeopleId: likes[0]._id,
         isLiked: true,
       })
         .then(() =>
@@ -138,13 +133,13 @@ export default function ResultQuestion({
         )
         .then(() =>
           updatePlayerLikes({
-            playerId: getCurrentPlayer
-              .map((e) => e._id)
-              .toString() as Id<"Players">,
+            playerId: getCurrentPlayer[0]._id,
             likes: false,
           })
         );
     }
+
+    return null
   }
   return (
     <Card>
@@ -155,41 +150,41 @@ export default function ResultQuestion({
       <CardContent className="space-y-3">
         {getAnswers
           ? getAnswers
-              .filter((e) => e.questionId === questionId)
-              .map((answer) => (
-                <div
-                  key={answer._id}
-                  className="w-full flex flex-col justify-center items-end"
-                >
-                  <div className="w-full flex justify-between items-center">
-                    <span>
-                      {answer.playerName}: {answer.content}
+            .filter((e) => e.questionId === questionId)
+            .map((answer) => (
+              <div
+                key={answer._id}
+                className="w-full flex flex-col justify-center items-end"
+              >
+                <div className="w-full flex justify-between items-center">
+                  <span>
+                    {answer.playerName}: {answer.content}
+                  </span>
+                  <div className="flex gap-1 justify-center items-center">
+                    <button
+                      title="Like"
+                      disabled={loader}
+                      onClick={() => onSave(answer._id)}
+                    >
+                      <Heart
+                        className={`${getLikedPeople?.filter((e) => e.answerId === answer._id && e.isLiked === true && e.userId === userId).length && "fill-rose-500 text-rose-500"} h-5 w-5`}
+                      />
+                    </button>
+                    <span className="font-semibold w-3">
+                      {answer.likesAmount}
                     </span>
-                    <div className="flex gap-1 justify-center items-center">
-                      <button
-                        title="Like"
-                        disabled={loader}
-                        onClick={() => onSave(answer._id)}
-                      >
-                        <Heart
-                          className={`${getLikedPeople?.filter((e) => e.answerId === answer._id && e.isLiked === true && e.userId === userId).length && "fill-rose-500 text-rose-500"} h-5 w-5`}
-                        />
-                      </button>
-                      <span className="font-semibold w-3">
-                        {answer.likesAmount}
-                      </span>
-                      {userRole === "Admin" && (
-                        <ReplyPopover
-                          userName={userName}
-                          userId={userId}
-                          answerId={answer._id}
-                        />
-                      )}
-                    </div>
+                    {getCurrentPlayer[0].role === "Admin" && (
+                      <ReplyPopover
+                        userName={userName}
+                        userId={userId}
+                        answerId={answer._id}
+                      />
+                    )}
                   </div>
-                  <ReplyList answerId={answer._id} userRole={userRole} />
                 </div>
-              ))
+                <ReplyList answerId={answer._id} userRole={getCurrentPlayer[0].role} />
+              </div>
+            ))
           : answerLoading}
       </CardContent>
       <CardFooter></CardFooter>
