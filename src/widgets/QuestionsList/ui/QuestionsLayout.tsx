@@ -12,6 +12,7 @@ import { Id } from "../../../../convex/_generated/dataModel";
 import IcebergQuestion from "./IcebergQuestion";
 import { Separator } from "@/shared/ui/separator";
 import SetTime from "./SetTime";
+import { ProgressBar } from "react-loader-spinner";
 
 interface QuestionsLayout {
   params: {
@@ -112,13 +113,22 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
       <Separator className="w-full h-[2px] my-10" />
       <QuestionsList roomId={roomId} />
       <Button
-        className="mt-6"
+        className="mt-6 w-full"
         disabled={getQuestions?.length === 0 || pendingCreatePlayer}
         onClick={onStart}
       >
-        Room
+        Enter room
         {pendingCreatePlayer ? (
-          <Loader2 className="animate-spin w-4 h-4" />
+          <ProgressBar
+            visible={true}
+            height="50"
+            width="50"
+            barColor="#fff"
+            borderColor="#fff"
+            ariaLabel="progress-bar-loading"
+            wrapperStyle={{}}
+            wrapperClass="ml-2"
+          />
         ) : (
           <ChevronRight strokeWidth={1.5} className="ml-2 w-5 h-5" />
         )}

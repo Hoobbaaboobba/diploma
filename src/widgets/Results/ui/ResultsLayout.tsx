@@ -6,6 +6,8 @@ import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import ResultsList from "@/widgets/Results/ui/ResultsList";
 import LoaderAnimation from "@/shared/ui/LoaderAnimation";
+import { Button } from "@/shared/ui/button";
+import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 
 interface ResultsLayoutProps {
   roomId: string;
@@ -16,8 +18,13 @@ export default function ResultsLayout({ roomId, session }: ResultsLayoutProps) {
   const getPlayers = useQuery(api.players.get, {
     roomId: roomId as Id<"Rooms">,
   });
+  const getRoom = useQuery(api.rooms.getRoomById, {
+    roomId: roomId as Id<"Rooms">,
+  });
 
-  if (!getPlayers) {
+  const { mutate: updateVote, pending } = useApiMutation(api.rooms.updateVote);
+
+  if (!getPlayers || !getRoom) {
     return <LoaderAnimation />;
   }
 
@@ -25,7 +32,21 @@ export default function ResultsLayout({ roomId, session }: ResultsLayoutProps) {
     getPlayers.length ===
     getPlayers.filter((e) => e.isAnswered === true).length;
 
-  if (!isEveryBodyAnswerd) {
+  const getCurrentPlayer = getPlayers.filter(
+    (e) => e.playerId === session.user.id
+  )[0];
+
+  function onStartvote() {
+    updateVote({
+      roomId: roomId as Id<"Rooms">,
+      isVoteStarted: true,
+    });
+  }
+
+  if (
+    !isEveryBodyAnswerd ||
+    (!getRoom.isVoteStarted && getCurrentPlayer.role !== "Admin")
+  ) {
     return (
       <div className="container flex flex-col gap-2 justify-center items-center mt-10">
         {getPlayers.map((player) => (
@@ -51,7 +72,15 @@ export default function ResultsLayout({ roomId, session }: ResultsLayoutProps) {
           </div>
         ))}
         <Loader2 className="animate-spin mt-4" />
-        <span className="text-black/50 text-sm">Waiting for everybody...</span>
+        {!isEveryBodyAnswerd ? (
+          <span className="text-black/50 text-sm">
+            Waiting for everybody...
+          </span>
+        ) : (
+          <span className="text-black/50 text-sm">
+            Everybody has answered! Waiting for Organizer...
+          </span>
+        )}
       </div>
     );
   }
@@ -63,6 +92,11 @@ export default function ResultsLayout({ roomId, session }: ResultsLayoutProps) {
         userId={session.user.id}
         userName={session.user.name}
       />
+      {!getRoom.isVoteStarted && (
+        <Button onClick={onStartvote} className="w-full">
+          {pending ? <Loader2 className="animate-spin" /> : "Start vote"}
+        </Button>
+      )}
     </div>
   );
 }

@@ -18,6 +18,8 @@ import { Loader, Loader2, Plus, Trash } from "lucide-react";
 import { useQuery } from "convex/react";
 import { Skeleton } from "@/shared/ui/skeleton";
 
+import { v4 as uuidv4 } from "uuid";
+
 interface QuestionProps {
   QuestionId: Id<"Questions">;
   content: string;
@@ -37,10 +39,11 @@ export default function Question({
 }: QuestionProps) {
   const [isLoader, setIsLoader] = useState(false);
 
+  const groupId = uuidv4();
+
   const { mutate, pending } = useApiMutation(api.answers.create);
-  const { mutate: updateAnswer } = useApiMutation(
-    api.answers.update
-  );
+  const { mutate: createGroup } = useApiMutation(api.groups.create);
+  const { mutate: updateAnswer } = useApiMutation(api.answers.update);
   const { mutate: deleteAnswer, pending: deleteAnswerPending } = useApiMutation(
     api.answers.deleteAnswer
   );
@@ -71,6 +74,11 @@ export default function Question({
       questionId: QuestionId,
       content: "",
       roomId: roomId,
+      groupId: groupId,
+    });
+    createGroup({
+      groupId: groupId,
+      questionId: QuestionId,
     });
   }
 
@@ -92,24 +100,24 @@ export default function Question({
       <CardContent className="space-y-4">
         {getAnswers
           ? getAnswers
-            ?.filter((e) => e.userId === userId)
-            .map((answer) => (
-              <div key={answer._id} className="flex gap-2">
-                <Input
-                  disabled={deleteAnswerPending}
-                  defaultValue={answer.content}
-                  onChange={(e) => onSave(e, answer._id)}
-                />
-                <Button
-                  disabled={deleteAnswerPending}
-                  onClick={() => onDelete(answer._id)}
-                  variant="destructive"
-                  size="icon"
-                >
-                  <Trash />
-                </Button>
-              </div>
-            ))
+              ?.filter((e) => e.userId === userId)
+              .map((answer) => (
+                <div key={answer._id} className="flex gap-2">
+                  <Input
+                    disabled={deleteAnswerPending}
+                    defaultValue={answer.content}
+                    onChange={(e) => onSave(e, answer._id)}
+                  />
+                  <Button
+                    disabled={deleteAnswerPending}
+                    onClick={() => onDelete(answer._id)}
+                    variant="destructive"
+                    size="icon"
+                  >
+                    <Trash />
+                  </Button>
+                </div>
+              ))
           : answersLoading}
         <Button onClick={MakeAnswer}>
           Add answer

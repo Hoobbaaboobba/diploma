@@ -13,6 +13,7 @@ export const createRoom = mutation({
       createId: args.createId,
       time: 0,
       icebergQuestionContent: "",
+      isVoteStarted: false,
     });
   },
 });
@@ -42,17 +43,17 @@ export const getRoomById = query({
   },
 });
 
-// export const updateCreate = mutation({
-//   args: {
-//     roomId: v.id("Rooms"),
-//     isCreated: v.boolean(),
-//   },
-//   handler: async (ctx, args) => {
-//     await ctx.db.patch(args.roomId, {
-//       isStart: args.isCreated,
-//     });
-//   },
-// });
+export const updateVote = mutation({
+  args: {
+    roomId: v.id("Rooms"),
+    isVoteStarted: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.roomId, {
+      isVoteStarted: args.isVoteStarted,
+    });
+  },
+});
 
 export const updateStart = mutation({
   args: {

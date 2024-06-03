@@ -3,57 +3,105 @@
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
-import { Ellipsis, Loader2, Send } from "lucide-react";
+import { Ellipsis, Loader, Loader2, Send } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Doc, Id } from "../../../../convex/_generated/dataModel";
 import { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/shared/ui/dropdown-menu";
+import { useQuery } from "convex/react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
+
+import { v4 as uuidv4 } from "uuid";
 
 interface ReplyPopoverProps {
-  userName: string;
-  userId: string;
+  answersNotInGroups?: Doc<"Groups">[];
+  questionId: Id<"Questions">;
+  roomId: string;
   answerId: Id<"Answers">;
+  groupId: string;
 }
 
 export default function ReplyPopover({
-  userName,
-  userId,
+  answersNotInGroups,
+  questionId,
+  roomId,
   answerId,
+  groupId,
 }: ReplyPopoverProps) {
   const [replyValue, setReplyValue] = useState("");
 
-  const { mutate, pending } = useApiMutation(api.replies.create);
+  const getGroups = useQuery(api.groups.getGroupsByQuestionId, {
+    questionId: questionId,
+  });
+  const getAnswers = useQuery(api.answers.getByRoom, {
+    roomId: roomId as Id<"Rooms">,
+  });
 
-  function onReply() {
-    mutate({
-      userName: userName,
-      userId: userId,
-      content: replyValue,
+  const { mutate: updateAnswer, pending: updateAnswerPending } = useApiMutation(
+    api.answers.updateGroupId
+  );
+
+  if (!getGroups || !getAnswers) {
+    return null;
+  }
+
+  function onAddTo(groupId: string) {
+    updateAnswer({
       answerId: answerId,
+      groupId: groupId,
     });
   }
+
+  function onRemove(answerId: Id<"Answers">) {
+    if (!getGroups) {
+      return null;
+    }
+    updateAnswer({
+      answerId: answerId,
+      groupId: answersNotInGroups?.map((e) => e.groupId)[0],
+    });
+  }
+
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <button title="Reply">
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild className="cursor-pointer">
           <Ellipsis />
-        </button>
-      </PopoverTrigger>
-      <PopoverContent className="mr-[200px]">
-        <form action={onReply} className="flex gap-2">
-          <Input
-            onChange={(e) => setReplyValue(e.target.value)}
-            placeholder="Reply"
-          />
-          <Button type="submit" size="icon">
-            {pending ? (
-              <Loader2 className="animate-spin" />
-            ) : (
-              <Send className="w-5 h-5" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          {getGroups
+            .filter((e) => e.questionId === questionId)
+            .map((group, index) =>
+              getAnswers.map(
+                (answer) =>
+                  group.groupId === answer.groupId &&
+                  groupId !== group.groupId && (
+                    <DropdownMenuItem
+                      key={index}
+                      onClick={() => onAddTo(group.groupId)}
+                    >
+                      Add to {answer.content}
+                    </DropdownMenuItem>
+                  )
+              )
             )}
-          </Button>
-        </form>
-      </PopoverContent>
-    </Popover>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => onRemove(answerId)}>
+            Remove from group
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 }

@@ -9,12 +9,15 @@ interface ResultsPageProps {
 }
 
 export default async function ResultsPage({ params }: ResultsPageProps) {
+  // получаем сессию из lib.ts
   const session = await getSession();
 
+  // если нет сессии, то перекидываем пользователя на главную страницу
   if (!session) {
     return redirect(`/`);
   }
 
+  // преобразуем в строку
   const jsonData = JSON.stringify(session, null, 2);
 
   // Parse the JSON string into a JavaScript object

@@ -27,12 +27,12 @@ export const get = query({
 export const create = mutation({
   args: {
     userId: v.string(),
-    answerId: v.id("Answers"),
+    groupId: v.id("Groups"),
   },
   handler: async (ctx, args) => {
     await ctx.db.insert("LikedPeople", {
       userId: args.userId,
-      answerId: args.answerId,
+      groupId: args.groupId,
       isLiked: true,
     });
   },

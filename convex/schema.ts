@@ -8,6 +8,7 @@ export default defineSchema({
     createId: v.string(), // id создания комнаты
     authorID: v.string(), // id того, кто создал комнату
     // isCreated: v.boolean(),
+    isVoteStarted: v.boolean(),
     isStart: v.boolean(), // началась ли конференция
     icebergQuestionContent: v.string(), // конент Iceberg вопроса
     time: v.number(),
@@ -45,15 +46,21 @@ export default defineSchema({
     questionId: v.id("Questions"), // id вопроса, на который был дан ответ
     content: v.string(), // содержание ответа
     roomId: v.id("Rooms"),
-    likesAmount: v.number(),
+    groupId: v.string(),
   })
     //.index("by_user", ["userId"]) // поиск ответа по id пользователя
     .index("by_question", ["questionId"]) // поиск ответа по id вопроса
     .index("by_room", ["roomId"]),
 
+  Groups: defineTable({
+    groupId: v.string(),
+    questionId: v.id("Questions"),
+    likes: v.number(),
+  }).index("by_questionId", ["questionId"]),
+
   LikedPeople: defineTable({
     userId: v.string(),
-    answerId: v.id("Answers"),
+    groupId: v.id("Groups"),
     isLiked: v.boolean(),
   }).index("by_userId", ["userId"]),
 

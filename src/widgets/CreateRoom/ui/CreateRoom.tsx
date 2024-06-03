@@ -2,8 +2,7 @@
 
 import { Button } from "@/shared/ui/button";
 import { api } from "../../../../convex/_generated/api";
-import { Loader2 } from "lucide-react";
-
+import { ProgressBar } from "react-loader-spinner";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/navigation";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
@@ -29,8 +28,29 @@ export default function CreateRoom({ session }: CreateRoomProps) {
     }).then(() => router.push(`/create/${createId}`));
   };
   return (
-    <Button onClick={onClick} className="w-[200px] mt-[400px]">
-      {pending ? <Loader2 className="animate-spin" /> : "Make room"}
+    <Button
+      disabled={pending}
+      onClick={onClick}
+      size="lg"
+      className="w-[250px] mt-[400px]"
+    >
+      {pending ? (
+        <>
+          Creating room
+          <ProgressBar
+            visible={true}
+            height="50"
+            width="50"
+            barColor="#fff"
+            borderColor="#fff"
+            ariaLabel="progress-bar-loading"
+            wrapperStyle={{}}
+            wrapperClass="ml-2"
+          />
+        </>
+      ) : (
+        "Make room"
+      )}
     </Button>
   );
 }

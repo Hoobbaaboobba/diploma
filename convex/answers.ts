@@ -8,6 +8,7 @@ export const create = mutation({
     questionId: v.id("Questions"),
     content: v.string(),
     roomId: v.id("Rooms"),
+    groupId: v.string(),
   },
   handler: async (ctx, args) => {
     await ctx.db.insert("Answers", {
@@ -16,7 +17,7 @@ export const create = mutation({
       questionId: args.questionId,
       content: args.content,
       roomId: args.roomId,
-      likesAmount: 0,
+      groupId: args.groupId,
     });
   },
 });
@@ -61,20 +62,14 @@ export const update = mutation({
   },
 });
 
-export const updateLikes = mutation({
+export const updateGroupId = mutation({
   args: {
     answerId: v.id("Answers"),
-    likes: v.boolean(),
+    groupId: v.string(),
   },
   handler: async (ctx, args) => {
-    const likes = await ctx.db.get(args.answerId);
-    if (args.likes) {
-      return await ctx.db.patch(args.answerId, {
-        likesAmount: (likes?.likesAmount as number) + 1,
-      });
-    }
-    return await ctx.db.patch(args.answerId, {
-      likesAmount: (likes?.likesAmount as number) - 1,
+    await ctx.db.patch(args.answerId, {
+      groupId: args.groupId,
     });
   },
 });
