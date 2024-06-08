@@ -11,18 +11,35 @@ import {
 import { Input } from "@/shared/ui/input";
 import { useState } from "react";
 import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Doc, Id } from "../../../../convex/_generated/dataModel";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
-import { Check, Loader2, Trash } from "lucide-react";
+import { Check, Lightbulb, Loader2, Trash } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/shared/ui/command";
 
 interface QuestionProps {
   id: Id<"Questions">;
   content: string;
   index: number;
+  questions: Doc<"QuestionTemplates">[] | undefined;
 }
 
-export default function Question({ id, content, index }: QuestionProps) {
+export default function Question({
+  id,
+  content,
+  index,
+  questions,
+}: QuestionProps) {
+  // Состояание, которое берется из инпута icebreaker question
   const [questionValue, setQuestionValue] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
 
   const { mutate: deleteQ, pending: pendingDeleteQ } = useApiMutation(
     api.questions.deleteQ
@@ -36,11 +53,21 @@ export default function Question({ id, content, index }: QuestionProps) {
     });
   }
 
-  function onSave(questionId: Id<"Questions">) {
-    return updateQ({
-      questionId: questionId,
+  function onSave() {
+    updateQ({
+      questionId: id,
       content: questionValue,
     });
+    setShowSuggestions(false);
+  }
+
+  function onSelect(value: string) {
+    setQuestionValue(value);
+    updateQ({
+      questionId: id,
+      content: value,
+    });
+    setShowSuggestions(false);
   }
 
   return (
@@ -58,18 +85,56 @@ export default function Question({ id, content, index }: QuestionProps) {
           </Button>
         </CardTitle>
       </CardHeader>
-      <CardContent className="relative">
+      <CardContent className="relative flex gap-2">
         <Input
-          onBlur={() => onSave(id)}
-          defaultValue={content}
+          onBlur={onSave}
+          value={questionValue}
           onChange={(e) => setQuestionValue(e.target.value)}
           className={`${questionValue === content && content.length > 0 && "border-emerald-400"}`}
         />
         {questionValue === content && content.length > 0 && (
-          <div className="absolute text-sm flex justify-center items-center top-3 right-8">
+          <div className="absolute text-sm flex justify-center items-center top-3 right-20">
             <Check className="w-4 h-4 text-green-600" />
           </div>
         )}
+        <Popover open={showSuggestions} onOpenChange={setShowSuggestions}>
+          <PopoverTrigger asChild>
+            <Button
+              className="border border-yellow-400"
+              variant="outline"
+              role="combobox"
+              size="icon"
+              aria-expanded={showSuggestions}
+            >
+              {<Lightbulb className="w-5 h-5" />}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="p-0 w-[490px] absolute -right-6">
+            <Command>
+              <CommandInput placeholder="Search question..." />
+              <CommandList>
+                <CommandEmpty>No question found.</CommandEmpty>
+                <CommandGroup>
+                  {!questions ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    questions.map((question, index) => (
+                      <CommandItem
+                        key={question.content}
+                        value={question.content}
+                        onSelect={(currentValue) => {
+                          onSelect(currentValue);
+                        }}
+                      >
+                        {index + 1}.- {question.content}
+                      </CommandItem>
+                    ))
+                  )}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
       </CardContent>
       <CardFooter></CardFooter>
     </Card>

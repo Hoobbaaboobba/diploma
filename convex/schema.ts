@@ -10,7 +10,7 @@ export default defineSchema({
     // isCreated: v.boolean(),
     isVoteStarted: v.boolean(),
     isStart: v.boolean(), // началась ли конференция
-    icebergQuestionContent: v.string(), // конент Iceberg вопроса
+    icebreakerQuestionContent: v.string(), // конент Iceberg вопроса
     time: v.number(),
   }).index("by_create", ["createId"]), // поиск таблицы по id создания
 
@@ -70,4 +70,12 @@ export default defineSchema({
     content: v.string(),
     answerId: v.id("Answers"),
   }).index("by_answerId", ["answerId"]),
+
+  IcebreakerQuestionTemplates: defineTable({
+    content: v.string(),
+  }),
+
+  QuestionTemplates: defineTable({
+    content: v.string(),
+  }),
 });

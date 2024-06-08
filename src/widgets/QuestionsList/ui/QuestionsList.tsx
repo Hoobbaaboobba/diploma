@@ -19,6 +19,8 @@ export default function QuestionsList({ roomId }: QuestionsListProps) {
     roomId: roomId as Id<"Rooms">,
   });
 
+  const getQuestionTemplates = useQuery(api.questiontemplates.getQuestions);
+
   const { mutate, pending } = useApiMutation(api.questions.create);
 
   function onPlus() {
@@ -42,6 +44,7 @@ export default function QuestionsList({ roomId }: QuestionsListProps) {
             id={question._id}
             content={question.content}
             index={index}
+            questions={getQuestionTemplates}
           />
         </div>
       ))}

@@ -9,7 +9,7 @@ import { ChevronRight, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { Id } from "../../../../convex/_generated/dataModel";
-import IcebergQuestion from "./IcebergQuestion";
+import IcebreakerQuestion from "./IcebreakerQuestion";
 import { Separator } from "@/shared/ui/separator";
 import SetTime from "./SetTime";
 import { ProgressBar } from "react-loader-spinner";
@@ -62,7 +62,7 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
   // Пока страница создания комнаты загружается, рисуем красивый UI
   if (!getRoom) {
     return (
-      <div className="container mt-10">
+      <div className="container my-10">
         <Skeleton className="w-full h-[202px]" />
       </div>
     );
@@ -102,12 +102,10 @@ export default function QuestionsLayout({ params, session }: QuestionsLayout) {
 
   // Если страница создания комнаты загружена, рисуем вопросы
   return (
-    <div className="flex container flex-col items-end justify-center py-8">
-      <IcebergQuestion
+    <div className="flex container flex-col items-end justify-center pt-10 pb-[200px]">
+      <IcebreakerQuestion
         roomId={roomId}
-        icebergQuestionContent={getRoom
-          .map((e) => e.icebergQuestionContent)
-          .toString()}
+        icebreakerQuestionContent={getRoom[0].icebreakerQuestionContent.toString()}
       />
       <SetTime createId={params.createId} />
       <Separator className="w-full h-[2px] my-10" />

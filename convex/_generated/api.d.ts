@@ -19,6 +19,7 @@ import type * as groups from "../groups.js";
 import type * as likedpeople from "../likedpeople.js";
 import type * as players from "../players.js";
 import type * as questions from "../questions.js";
+import type * as questiontemplates from "../questiontemplates.js";
 import type * as replies from "../replies.js";
 import type * as rooms from "../rooms.js";
 import type * as users from "../users.js";
@@ -37,6 +38,7 @@ declare const fullApi: ApiFromModules<{
   likedpeople: typeof likedpeople;
   players: typeof players;
   questions: typeof questions;
+  questiontemplates: typeof questiontemplates;
   replies: typeof replies;
   rooms: typeof rooms;
   users: typeof users;

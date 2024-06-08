@@ -14,7 +14,7 @@ export async function encrypt(payload: any) {
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("3600 sec from now")
+    .setExpirationTime("1 day from now")
     .sign(key);
 }
 
@@ -31,7 +31,7 @@ export async function login(values: z.infer<typeof loginSchema>) {
     name: values.name,
   };
 
-  const expires = new Date(Date.now() + 3600 * 1000);
+  const expires = new Date(Date.now() + 86400 * 1000);
   const session = await encrypt({ user, expires });
 
   cookies().set("session", session, { expires, httpOnly: true });

@@ -53,6 +53,7 @@ export default function SetTime({ createId }: SetTimeProps) {
       <CardContent className="relative">
         <Input
           defaultValue={getRoom[0].time}
+          type="number"
           onBlur={onSetTime}
           onChange={(e) => setTimeValue(e.target.value)}
           className={`${timeValue.length > 0 && "border-emerald-400"}`}

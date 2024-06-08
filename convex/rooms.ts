@@ -12,7 +12,7 @@ export const createRoom = mutation({
       isStart: false,
       createId: args.createId,
       time: 0,
-      icebergQuestionContent: "",
+      icebreakerQuestionContent: "",
       isVoteStarted: false,
     });
   },
@@ -79,14 +79,14 @@ export const updateTimer = mutation({
   },
 });
 
-export const createIcebergQuestion = mutation({
+export const createIcebreakerQuestion = mutation({
   args: {
     roomId: v.id("Rooms"),
-    icebergQuestionContent: v.string(),
+    icebreakerQuestionContent: v.string(),
   },
   handler: async (ctx, args) => {
     await ctx.db.patch(args.roomId, {
-      icebergQuestionContent: args.icebergQuestionContent,
+      icebreakerQuestionContent: args.icebreakerQuestionContent,
     });
   },
 });
