@@ -7,7 +7,7 @@ export const create = mutation({
     userName: v.string(),
     userId: v.string(),
     content: v.string(),
-    answerId: v.id("Answers"),
+    groupId: v.id("Groups"),
   },
   handler: async (ctx, args) => {
     // прокидываем эти аргументы
@@ -15,20 +15,15 @@ export const create = mutation({
       userName: args.userName,
       userId: args.userId,
       content: args.content,
-      answerId: args.answerId,
+      groupId: args.groupId,
     });
   },
 });
 
-export const getByAnswerId = query({
-  args: {
-    answerId: v.id("Answers"), // id комнаты, которую хотим получить
-  },
-  handler: async (ctx, args) => {
-    const replies = ctx.db
-      .query("Replies")
-      .withIndex("by_answerId", (q) => q.eq("answerId", args.answerId))
-      .collect();
+export const getByGroupId = query({
+  args: {},
+  handler: async (ctx, _) => {
+    const replies = ctx.db.query("Replies").collect();
 
     return replies;
   },

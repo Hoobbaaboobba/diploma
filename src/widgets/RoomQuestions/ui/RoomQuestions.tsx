@@ -7,7 +7,7 @@ import Question from "./Question";
 import { Button } from "@/shared/ui/button";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 import { FlagTriangleRight, Loader2 } from "lucide-react";
-import { redirect, useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import LoaderAnimation from "@/shared/ui/LoaderAnimation";
 
 interface RoomQuestionsProps {
@@ -43,7 +43,7 @@ export default function RoomQuestions({ params, session }: RoomQuestionsProps) {
 
   function onComplete() {
     if (!getCurrentUser) {
-      return null
+      return null;
     }
     updateIsAnswered({
       playerId: getCurrentUser[0]._id,

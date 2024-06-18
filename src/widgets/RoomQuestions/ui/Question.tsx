@@ -90,10 +90,12 @@ export default function Question({
 
   return (
     <Card className="w-full relative">
+      {isLoader && (
+        <Loader className="animate-spin absolute top-4 right-4 w-5 h-5" />
+      )}
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
           {content}
-          {isLoader && <Loader className="animate-spin w-4 h-4" />}
         </CardTitle>
         <CardDescription>Question {index + 1}</CardDescription>
       </CardHeader>
@@ -119,7 +121,7 @@ export default function Question({
                 </div>
               ))
           : answersLoading}
-        <Button onClick={MakeAnswer}>
+        <Button disabled={pending} onClick={MakeAnswer}>
           Add answer
           {pending ? (
             <Loader2 className="animate-spin ml-1 h-5" />

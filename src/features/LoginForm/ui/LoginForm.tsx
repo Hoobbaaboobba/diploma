@@ -58,7 +58,7 @@ export default function LoginForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input placeholder="shadcn" {...field} />
+                      <Input placeholder="Alex" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

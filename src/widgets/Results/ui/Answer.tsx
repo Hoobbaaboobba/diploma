@@ -1,7 +1,7 @@
 import { Volume2 } from "lucide-react";
 import { Doc, Id } from "../../../../convex/_generated/dataModel";
 import ReplyList from "./ReplyList";
-import ReplyPopover from "./ReplyPopover";
+import GroupPopover from "./GroupPopover";
 
 interface AnswerProps {
   answerId: Id<"Answers">;
@@ -38,7 +38,7 @@ export default function Answer({
         </span>
         <div className="flex gap-1 justify-center items-center">
           {playerRole === "Admin" && !isVoteStarted && (
-            <ReplyPopover
+            <GroupPopover
               answersNotInGroups={answersNotInGroups}
               groupId={groupId}
               roomId={roomId}

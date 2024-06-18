@@ -58,3 +58,12 @@ export const getGroupsByQuestionId = query({
     return groups;
   },
 });
+
+export const getAllGroups = query({
+  args: {},
+  handler: async (ctx, _) => {
+    const groups = ctx.db.query("Groups").collect();
+
+    return groups;
+  },
+});

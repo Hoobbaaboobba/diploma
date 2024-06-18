@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { api } from "../../../../convex/_generated/api";
 import { useQuery } from "convex/react";
 import { Id } from "../../../../convex/_generated/dataModel";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
 interface RoomQuestionsProps {
   params: {
@@ -15,8 +15,6 @@ interface RoomQuestionsProps {
 }
 
 export default function Timer({ params, session }: RoomQuestionsProps) {
-  const router = useRouter();
-
   const { mutate } = useApiMutation(api.rooms.updateTimer);
   const { mutate: updateIsAnswered } = useApiMutation(
     api.players.updateAnswered
@@ -40,7 +38,7 @@ export default function Timer({ params, session }: RoomQuestionsProps) {
       interval = setInterval(() => {
         mutate({
           roomId: params.roomId as Id<"Rooms">,
-          time: (getRoom?.time) - 1,
+          time: getRoom?.time - 1,
         });
       }, 1000);
       return () => clearInterval(interval);
@@ -48,7 +46,7 @@ export default function Timer({ params, session }: RoomQuestionsProps) {
       updateIsAnswered({
         playerId: getCurrentUser[0]._id,
         isAnswered: true,
-      }).then(() => router.push(`/results/${params.roomId}`));
+      }).then(() => redirect(`/results/${params.roomId}`));
     }
   }, [
     getCurrentUser,
@@ -56,7 +54,6 @@ export default function Timer({ params, session }: RoomQuestionsProps) {
     getRoom?.time,
     mutate,
     params.roomId,
-    router,
     updateIsAnswered,
   ]);
 
@@ -72,7 +69,7 @@ export default function Timer({ params, session }: RoomQuestionsProps) {
 
   return (
     <div
-      className={`${(getRoom?.time as number) > 20 ? "text-emerald-400" : "text-rose-400 timer"} flex absolute left-5 top-5 justify-center items-center text-xl font-bold`}
+      className={`${(getRoom?.time as number) > 20 ? "text-emerald-400" : "text-rose-400 timer"} flex fixed left-5 top-5 justify-center items-center text-xl font-bold`}
     >
       {getRoom?.time}s
     </div>

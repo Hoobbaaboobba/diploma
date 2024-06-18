@@ -18,6 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/ui/card";
+import TopAnswers from "./TopAnswers";
 
 interface ResultsLayoutProps {
   roomId: string;
@@ -33,6 +34,9 @@ export default function ResultsLayout({ roomId, session }: ResultsLayoutProps) {
   });
 
   const { mutate: updateVote, pending } = useApiMutation(api.rooms.updateVote);
+  const { mutate: endVote, pending: endVotePending } = useApiMutation(
+    api.rooms.endVote
+  );
 
   if (!getPlayers || !getRoom) {
     return <LoaderAnimation />;
@@ -46,10 +50,16 @@ export default function ResultsLayout({ roomId, session }: ResultsLayoutProps) {
     (e) => e.playerId === session.user.id
   )[0];
 
-  function onStartvote() {
+  function onStartVote() {
     updateVote({
       roomId: roomId as Id<"Rooms">,
       isVoteStarted: true,
+    });
+  }
+  function onEndVote() {
+    endVote({
+      roomId: roomId as Id<"Rooms">,
+      isVoteEnd: true,
     });
   }
 
@@ -63,29 +73,55 @@ export default function ResultsLayout({ roomId, session }: ResultsLayoutProps) {
   }
 
   return (
-    <div className="container mt-10 space-y-8">
-      {getRoom.icebreakerQuestionContent.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex gap-1 justify-start items-center">
-              <CircleHelp className="w-8 h-8" />{" "}
-              <span>Icebreaker question</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>{getRoom.icebreakerQuestionContent}</CardContent>
-          <CardFooter></CardFooter>
-        </Card>
+    <div className="container my-10 space-y-8">
+      {!getRoom.isVoteEnd && (
+        <>
+          {getRoom.icebreakerQuestionContent.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex gap-1 justify-start items-center">
+                  <CircleHelp className="w-8 h-8" />{" "}
+                  <span>Icebreaker question</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>{getRoom.icebreakerQuestionContent}</CardContent>
+              <CardFooter></CardFooter>
+            </Card>
+          )}
+          <ResultsList
+            roomId={roomId}
+            userId={session.user.id}
+            userName={session.user.name}
+          />
+        </>
       )}
-      <ResultsList
-        roomId={roomId}
-        userId={session.user.id}
-        userName={session.user.name}
-      />
+
+      {getRoom.isVoteEnd && (
+        <TopAnswers
+          roomId={roomId}
+          userId={session.user.id}
+          userName={session.user.name}
+          userRole={getCurrentPlayer.role}
+        />
+      )}
+
       {!getRoom.isVoteStarted && (
-        <Button onClick={onStartvote} className="w-full">
+        <Button disabled={pending} onClick={onStartVote} className="w-full">
           {pending ? <Loader2 className="animate-spin" /> : "Start vote"}
         </Button>
       )}
+
+      {getRoom.isVoteStarted &&
+        !getRoom.isVoteEnd &&
+        getCurrentPlayer.role === "Admin" && (
+          <Button
+            disabled={endVotePending}
+            onClick={onEndVote}
+            className="w-full"
+          >
+            {endVotePending ? <Loader2 className="animate-spin" /> : "End vote"}
+          </Button>
+        )}
     </div>
   );
 }

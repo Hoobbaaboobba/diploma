@@ -78,7 +78,7 @@ export default function LoginFormByLink({ params }: LoginFormByLinkProps) {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input placeholder="shadcn" {...field} />
+                      <Input placeholder="Alex" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

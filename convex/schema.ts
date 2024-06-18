@@ -9,6 +9,7 @@ export default defineSchema({
     authorID: v.string(), // id того, кто создал комнату
     // isCreated: v.boolean(),
     isVoteStarted: v.boolean(),
+    isVoteEnd: v.boolean(),
     isStart: v.boolean(), // началась ли конференция
     icebreakerQuestionContent: v.string(), // конент Iceberg вопроса
     time: v.number(),
@@ -68,8 +69,8 @@ export default defineSchema({
     userName: v.string(),
     userId: v.string(),
     content: v.string(),
-    answerId: v.id("Answers"),
-  }).index("by_answerId", ["answerId"]),
+    groupId: v.id("Groups"),
+  }).index("by_groupId", ["groupId"]),
 
   IcebreakerQuestionTemplates: defineTable({
     content: v.string(),
