@@ -1,6 +1,5 @@
 import { Volume2 } from "lucide-react";
 import { Doc, Id } from "../../../../convex/_generated/dataModel";
-import ReplyList from "./ReplyList";
 import GroupPopover from "./GroupPopover";
 
 interface AnswerProps {
@@ -48,7 +47,7 @@ export default function Answer({
           )}
         </div>
       </div>
-      <ReplyList answerId={answerId} userRole={playerRole} />
+      {/* <ReplyList answerId={answerId} userRole={playerRole} /> */}
     </div>
   );
 }
