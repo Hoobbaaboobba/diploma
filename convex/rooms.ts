@@ -15,6 +15,7 @@ export const createRoom = mutation({
       icebreakerQuestionContent: "",
       isVoteStarted: false,
       isVoteEnd: false,
+      isMeetingEnd: false,
     });
   },
 });
@@ -76,6 +77,17 @@ export const updateStart = mutation({
   handler: async (ctx, args) => {
     await ctx.db.patch(args.roomId, {
       isStart: args.isStart,
+    });
+  },
+});
+
+export const endMeeting = mutation({
+  args: {
+    roomId: v.id("Rooms"),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.roomId, {
+      isMeetingEnd: true,
     });
   },
 });

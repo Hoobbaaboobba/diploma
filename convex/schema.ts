@@ -11,6 +11,7 @@ export default defineSchema({
     isVoteStarted: v.boolean(),
     isVoteEnd: v.boolean(),
     isStart: v.boolean(), // началась ли конференция
+    isMeetingEnd: v.boolean(),
     icebreakerQuestionContent: v.string(), // конент Iceberg вопроса
     time: v.number(),
   }).index("by_create", ["createId"]), // поиск таблицы по id создания

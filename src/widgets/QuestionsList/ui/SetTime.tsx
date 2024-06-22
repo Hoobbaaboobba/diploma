@@ -56,10 +56,12 @@ export default function SetTime({ createId }: SetTimeProps) {
           type="number"
           onBlur={onSetTime}
           onChange={(e) => setTimeValue(e.target.value)}
-          className={`${timeValue.length > 0 && "border-emerald-400"}`}
+          className={`${timeValue.length > 0 && "border-emerald-400"} group`}
         />
         {timeValue.length > 0 && (
-          <div className="absolute text-sm flex justify-center items-center top-3 right-8">
+          <div
+            className={`absolute text-sm flex justify-center items-center -top-10 right-6`}
+          >
             <Check className="w-4 h-4 text-green-600" />
           </div>
         )}

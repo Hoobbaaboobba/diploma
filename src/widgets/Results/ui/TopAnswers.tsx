@@ -9,11 +9,18 @@ import {
 } from "@/shared/ui/card";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { CornerDownLeft, Heart, Loader2, Plus } from "lucide-react";
+import { CornerDownLeft, Download, Heart, Loader2, Plus } from "lucide-react";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { colors } from "./colors";
 import ReplyPopover from "./ReplyPopover";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
+
+import { toPng } from "html-to-image";
+import jsPDF from "jspdf";
+import { useRef } from "react";
+import { Button } from "@/shared/ui/button";
+import LoaderAnimation from "@/shared/ui/LoaderAnimation";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 interface TopAnswersProps {
   roomId: string;
@@ -34,10 +41,32 @@ export default function TopAnswers({
   const getGroups = useQuery(api.groups.getAllGroups);
   const getReplies = useQuery(api.replies.getByGroupId);
 
+  const ref = useRef<any>();
   const { mutate: deleteReply } = useApiMutation(api.replies.deleteReply);
 
   if (!getGroups || !getAnswers) {
-    return "Loading...";
+    return (
+      <div className="w-full container p-0 flex flex-col gap-10 justify-center items-center mt-10">
+        <Skeleton className="w-full h-[400px]" />
+      </div>
+    );
+  }
+
+  async function handleDowloadPDF() {
+    try {
+      if (ref.current === undefined) {
+        return;
+      }
+      if (!getAnswers || !getGroups) {
+        return null;
+      }
+      const dataUrl = await toPng(ref.current);
+      const pdf = new jsPDF();
+      pdf.addImage(dataUrl, "PNG", 0, 0, 210, getAnswers.length * 22);
+      pdf.save("TopAnswers.pdf");
+    } catch (err) {
+      console.error("Error capturing screenshot:", err);
+    }
   }
 
   function onRemoveReply(replyId: Id<"Replies">) {
@@ -46,9 +75,14 @@ export default function TopAnswers({
     });
   }
   return (
-    <Card>
+    <Card ref={ref}>
       <CardHeader>
-        <CardTitle>Top Answers</CardTitle>
+        <CardTitle className="flex justify-between items-center">
+          <span>Top Answers</span>
+          <Button title="download pdf" onClick={handleDowloadPDF} size="icon">
+            <Download />
+          </Button>
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {getGroups
