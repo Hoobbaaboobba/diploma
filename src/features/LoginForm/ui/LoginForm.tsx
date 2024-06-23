@@ -13,7 +13,6 @@ import {
   FormItem,
   FormMessage,
 } from "@/shared/ui/form";
-import { useTransition } from "react";
 import { loginSchema } from "../../../../schemas/loginSchema";
 import { login } from "../../../../lib";
 import { Loader2 } from "lucide-react";

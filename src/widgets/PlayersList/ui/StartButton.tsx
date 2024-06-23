@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/shared/ui/button";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Doc, Id } from "../../../../convex/_generated/dataModel";
 import { api } from "../../../../convex/_generated/api";
 import { useApiMutation } from "@/entities/mutation/use-api-mutation";
 import { Loader2 } from "lucide-react";
@@ -12,17 +12,7 @@ interface StartButtonProps {
   };
   userId: string;
   role: string;
-  getPlayers:
-  | {
-    _id: Id<"Players">;
-    _creationTime: number;
-    name: string;
-    playerId: string;
-    roomId: Id<"Rooms">;
-    role: string;
-    isReady: boolean;
-  }[]
-  | undefined;
+  getPlayers: Doc<"Players">[] | undefined;
 }
 
 export default function StartButton({

@@ -1,20 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
-// export const getByUserId = query({
-//   args: {
-//     answerId: v.id("Answers"),
-//   },
-//   handler: async (ctx, args) => {
-//     const user = ctx.db
-//       .query("LikedPeople")
-//       .withIndex("by_answerId", (q) => q.eq("answerId", args.answerId))
-//       .collect();
-
-//     return user;
-//   },
-// });
-
 export const get = query({
   args: {},
   handler: async (ctx, args) => {
@@ -30,7 +16,7 @@ export const create = mutation({
     groupId: v.id("Groups"),
   },
   handler: async (ctx, args) => {
-    await ctx.db.insert("LikedPeople", {
+    return await ctx.db.insert("LikedPeople", {
       userId: args.userId,
       groupId: args.groupId,
       isLiked: true,

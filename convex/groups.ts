@@ -7,7 +7,7 @@ export const create = mutation({
     groupId: v.string(),
   },
   handler: async (ctx, args) => {
-    await ctx.db.insert("Groups", {
+    return await ctx.db.insert("Groups", {
       questionId: args.questionId,
       groupId: args.groupId,
       likes: 0,
@@ -21,9 +21,10 @@ export const update = mutation({
     groupId: v.string(),
   },
   handler: async (ctx, args) => {
-    await ctx.db.patch(args._id, {
+    const group = await ctx.db.patch(args._id, {
       groupId: args.groupId,
     });
+    return group;
   },
 });
 

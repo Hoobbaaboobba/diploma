@@ -1,6 +1,6 @@
 import { LoginForm } from "@/features/LoginForm";
-import { CreateRoom } from "@/widgets/CreateRoom";
 import { getSession } from "../../../lib";
+import { CreateRoom } from "@/widgets/CreateRoom";
 
 export default async function Home() {
   // берем сессию из lib.ts

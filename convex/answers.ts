@@ -11,7 +11,7 @@ export const create = mutation({
     groupId: v.string(),
   },
   handler: async (ctx, args) => {
-    await ctx.db.insert("Answers", {
+    return await ctx.db.insert("Answers", {
       userId: args.userId,
       playerName: args.playerName,
       questionId: args.questionId,

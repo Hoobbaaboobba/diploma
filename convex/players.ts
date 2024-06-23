@@ -13,7 +13,7 @@ export const create = mutation({
   },
   handler: async (ctx, args) => {
     // прокидываем эти аргументы
-    await ctx.db.insert("Players", {
+    return await ctx.db.insert("Players", {
       playerId: args.playerId,
       name: args.name,
       roomId: args.roomId,

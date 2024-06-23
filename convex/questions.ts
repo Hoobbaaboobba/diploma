@@ -20,7 +20,7 @@ export const create = mutation({
     roomId: v.id("Rooms"),
   },
   handler: async (ctx, args) => {
-    await ctx.db.insert("Questions", {
+    return await ctx.db.insert("Questions", {
       roomId: args.roomId,
       content: "",
     });

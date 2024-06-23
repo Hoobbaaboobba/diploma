@@ -15,20 +15,26 @@ interface QuestionsListProps {
 }
 
 export default function QuestionsList({ roomId }: QuestionsListProps) {
+  // получем вопросы, относящиеся к комнате по room id
+  // useQuery - convex функция
   const getQuestions = useQuery(api.questions.get, {
     roomId: roomId as Id<"Rooms">,
   });
 
+  // получаем шаблоны вопросов
   const getQuestionTemplates = useQuery(api.questiontemplates.getQuestions);
 
+  // кастомная функция convex, создаем вопрос
   const { mutate, pending } = useApiMutation(api.questions.create);
 
+  // при нажатии на кнопку создается вопрос
   function onPlus() {
     return mutate({
       roomId: roomId,
     });
   }
 
+  // если нет вопросов, показываем загрузку
   if (!getQuestions) {
     return <LoaderAnimation />;
   }

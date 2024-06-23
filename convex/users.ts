@@ -15,6 +15,7 @@ export const createUser = mutation({
 });
 
 export const getUsers = query({
+  args: {},
   handler: async (ctx) => {
     return ctx.db.query("Users").collect();
   },

@@ -7,7 +7,7 @@ export const createRoom = mutation({
     createId: v.string(),
   },
   handler: async (ctx, args) => {
-    await ctx.db.insert("Rooms", {
+    const room = await ctx.db.insert("Rooms", {
       authorID: args.authorID,
       isStart: false,
       createId: args.createId,
@@ -17,6 +17,7 @@ export const createRoom = mutation({
       isVoteEnd: false,
       isMeetingEnd: false,
     });
+    return room;
   },
 });
 

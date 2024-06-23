@@ -20,21 +20,28 @@ interface SetTimeProps {
 }
 
 export default function SetTime({ createId }: SetTimeProps) {
+  // создаем локальное состояние времени
   const [timeValue, setTimeValue] = useState("");
 
+  // кастомная функция, которая обновляет время в базе данных
   const { mutate: setTime, pending } = useApiMutation(api.rooms.updateTimer);
 
+  // функция convex, получаем команты по id из ссылки
   const getRoom = useQuery(api.rooms.getRoomByCreateId, {
     createId: createId,
   });
+
+  // получаем комнату по id комнаты
   const getRoomById = useQuery(api.rooms.getRoomById, {
     roomId: getRoom?.map((e) => e._id).toString() as Id<"Rooms">,
   });
 
+  // если нет комнаты, возвращаем null
   if (!getRoomById || !getRoom) {
     return null;
   }
 
+  // при вводе в input, обновляется база данных
   function onSetTime() {
     if (!getRoomById) {
       return null;
